@@ -12,9 +12,9 @@ function Navbar() {
       <div className="border-l-2"/>
       <div className="table-cell w-[85%] align-middle text-right">
         <Link className="ml-auto mr-4">Home</Link>
-        <Link>Dashboard</Link>
-        <Link className="">Create</Link>
-        <Avatar className="mr-10">H</Avatar>
+        <Link className="">Dashboard</Link>
+        <Link className="mr-10">Create</Link>
+        <Avatar className="mr-10">Jo</Avatar>
       </div>
     </div>
   );
