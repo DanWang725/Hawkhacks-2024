@@ -1,7 +1,7 @@
 from openai import OpenAI
 import tiktoken
 import os
-import dotenv
+from dotenv import load_dotenv
 
 OpenAiInitialSystemMessage = """
 You are going to play the role of a professor writing a test for your students. It will be in the form of a multiple choice test.
@@ -39,4 +39,49 @@ class gptManager:
     chatHistory = []
     
     def __init__(self):
+        load_dotenv()
+        
+        self.client = OpenAI(
+            organization='org-Wr0OcM4KbkxO8eDGbrgP7XxT',
+            project='proj_e5BudJi0QmXDFk7zpXdHmPkP'
+        )
+        
+        self.chat_history.append({
+            "role": "system",
+            "content": [{
+                "type": "text",
+                "text": OpenAiInitialSystemMessage
+            }]
+        })
+    
+    
+    
+    def normalize_quotes(self, text):
+        quotes = {
+            '“': '"',
+            '”': '"',
+            '‘': "'",
+            '’': "'",
+        }
+        for original, replacement in quotes.items():
+            text = text.replace(original, replacement)
+        return text
+    
+    
+    
+    def questions_no_history(self, notes):
+        if not notes:
+            print("Error: Can not create questions without notes")
+            return
+        
+        response = self.client.create_chat(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": OpenAiInitialSystemMessage},
+                {"role": "user", "content": "Here are the notes:" + notes}
+            ]
+        )
+        
+        self.chat_history.append(response)
+        return response
 
