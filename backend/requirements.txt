@@ -1,0 +1,6 @@
+openai
+tiktoken
+flask
+python-dotenv
+flask-cors
+flask_mysqldb
