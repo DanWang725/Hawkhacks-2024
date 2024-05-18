@@ -1,54 +1,41 @@
 import { Avatar } from '@mui/material';
 import Link from '@mui/material/Link';
 
-
 const linkStyle = {
   fontSize: '18px',
+  marginX:'2%',
+  display: 'flex',
 };
 
-
 const Navbar = () => {
+
+  const clickProfile = () => {
+    console.log('clicked profile');
+  }
+
   return (
-    <div className="w-100 h-[50px] bg-primary table table-fixed text-white">
-      <div className="w-[200px] table-cell align-middle"> 
-        <h1 className="font-bold text-2xl pl-4">Study Buddy</h1>
-      </div>
-      
-      <div className="w-[5%] table-cell align-center"> 
-        <div className="border-l-2 border-white h-[30px] mt-[10px] absolute"/>
-      </div>
+    <header className="flex h-14 items-center bg-primary border-b-2 border-secondary px-4 lg:px-6 ">
+      <Link href="/" sx={{marginRight:'2%', display: 'flex', fontWeight: 'bold', fontSize: '22px'}} underline='none' color='white'>Study Buddy</Link>
 
-      <div className="table-cell w-[80%] align-middle text-right">
-        <Link 
-          href="/home"
-          sx={{marginX:'2%', ...linkStyle}}
-          underline='hover'
-          color='inherit'
-        >
-          Home
-        </Link>
-        <Link 
-          href="/dashboard"
-          sx={{marginX:'2%', ...linkStyle}}
-          underline='hover'
-          color='inherit'
-        >
-          Dashboard
-        </Link>
-        <Link 
-          href="/create" 
-          sx={{marginLeft:'2%', marginRight:'4%', ...linkStyle}}
-          underline='hover'
-          color='inherit'
-        >
-          Create
-        </Link>
-      </div>
+      <Link href="/home" sx={linkStyle} underline='hover' color='white'>Home</Link>
+      <Link href="/dashboard" sx={linkStyle} underline='hover' color='white'>Dashboard</Link>
+      <Link href="/create" sx={linkStyle} underline='hover' color='white'>Create</Link>
 
-      <div className="table-cell w-[5%] align-middle">
-        <Avatar className="mx-auto">Jo</Avatar>
-      </div>
-    </div>
+      <nav className="ml-auto flex gap-4 sm:gap-6">
+        <div className="ml-auto flex gap-4 sm:gap-6">
+          <div className="flex items-center gap-2">
+            <div className="flex flex-col items-end">
+              <span className="text-[18px] text-secondary text-white">User Name</span>
+            </div>
+
+            <Avatar onClick={clickProfile} sx={{cursor:'pointer'}}>:)</Avatar>
+          </div>
+        </div>
+      </nav>
+    </header>
+    //   <div className="align-center"> 
+    //     <div className="border-l-2 border-white h-[26px] mt-[12px] absolute"/>
+    //   </div>
   );
 };
 
