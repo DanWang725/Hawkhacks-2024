@@ -1,10 +1,12 @@
 import Navbar from './navbar';
+import TestCard from './card.js'
 
-function App() {
+const App = () => {
   return (
-    <div>
-        <Navbar />
+    <div> 
+        <Navbar/>
         <h1>HEHEHEHHABUGGSUS</h1>
+        <TestCard/>
     </div>
   );
 }
