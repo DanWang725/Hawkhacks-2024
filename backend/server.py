@@ -16,9 +16,9 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://{}:{}@{}/{}".format(os.getenv('MYSQL_USER'), os.getenv('MYSQL_PASSWORD'),  os.getenv('MYSQL_HOST'), os.getenv('MYSQL_DB'))
 db = SQLAlchemy(app)
 
-class University(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(String(30))
+# class University(db.Model):
+#     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+#     name: Mapped[str] = mapped_column(String(30))
     
 class User(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -28,12 +28,15 @@ class User(db.Model):
 
 class Course(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(String(30))
+    name: Mapped[Optional[str]] = mapped_column(String(30), unique=True)
+    code: Mapped[str] = mapped_column(String(10))
     desc: Mapped[str] = mapped_column(String(255))
-    universityId: Mapped[Optional[str]] = mapped_column(ForeignKey("university.id"))
+    university: Mapped[str] = mapped_column(String(40))
+    
 
 class Unit(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(20))
     summary: Mapped[str] = mapped_column(String(1000))
     courseId: Mapped[int] = mapped_column(ForeignKey("course.id"))
     authorId: Mapped[int] = mapped_column(ForeignKey("user.id"))
@@ -46,6 +49,22 @@ class Test(db.Model):
     coruseId: Mapped[int] = mapped_column(ForeignKey("course.id"))
     authorId: Mapped[int] = mapped_column(ForeignKey("user.id"))
 
+class TestQuestion(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    testId: Mapped[int] = mapped_column(ForeignKey("test.id"))
+    question: Mapped[str] = mapped_column(String(100))
+    opt1: Mapped[str] = mapped_column(String(100))
+    opt2: Mapped[str] = mapped_column(String(100))
+    opt3: Mapped[str] = mapped_column(String(100))
+    opt4: Mapped[str] = mapped_column(String(100))
+    answer: Mapped[int] = mapped_column(Integer(2))
+    justification: Mapped[str] = mapped_column(String(100))
+
+class UserQuestionAnswer(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    answer: Mapped[int] = mapped_column(Integer(2))
+    isCorrect: Mapped[bool] = mapped_column(db.Boolean)
+    questionId: Mapped[int] = mapped_column(ForeignKey("test_question.id"))
 
 with app.app_context() as ctx:
     ctx.push()
@@ -89,3 +108,38 @@ def test():
     print( users.fetchall())
     
 
+@app.route('/tests', methods=["GET", "POST"])
+def tests():
+    if(request.method == "GET"):
+        userId = request.args.get('userId')
+        tests = db.session.exec(db.select(Test).order_by(Test.dateCreated)).scalars()
+        parsedTests = []
+        for test in tests.fetchall():
+            payload = dict()
+            course = db.session.exec(db.select(Course.code, Course.university).where(Course.id == test.courseId)).one()
+            units = db.session.exec(db.select(Unit.name).where(Unit.courseId == test.id)).all();
+            questionCount = db.session.exec(db.select(TestQuestion).where(TestQuestion.testId == test.id)).count()
+            hasAttemptedTest = db.session.exec(db.select(UserQuestionAnswer).where(UserQuestionAnswer.questionId == test.id).where(UserQuestionAnswer.answer == userId)).count()
+            payload['courseCode'] = course[0]
+            payload['name'] =  test.name
+            payload['date'] = test.dateCreated
+            payload['university'] = course[1]
+            payload['units'] = units
+            payload['questionAmount'] = questionCount
+            if(hasAttemptedTest > 0):
+                payload['hasAttempted'] = True
+                payload['correctQuestions'] = db.session.exec(db.select(UserQuestionAnswer).where(UserQuestionAnswer.questionId == test.id).where(UserQuestionAnswer.answer == userId).where(UserQuestionAnswer.isCorrect == True)).count()    
+            
+            parsedTests.append(payload)
+        responsePayload = dict(tests=parsedTests, status=200, message="Success");
+# @app.route('/course', methods=["GET", "POST"])
+# def courses():
+#     if(request.method == "GET"):
+#         courses = db.session.exec(db.select(Course)).scalars()
+#         payload = dict()
+#         for course in courses.fetchall():
+#             coursePayload = dict()
+#             coursePayload['University'] = db.session.exec(db.select(University.name).where(University.id==course.universityId)).one()
+#             coursePayload['']
+
+    
