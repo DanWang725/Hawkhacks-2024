@@ -6,8 +6,7 @@ abungus alert
 ## Getting Started
 
 ### Installing Python Libraries
-In the `\backend` directory, run `pip install -r requirements.txt`.
-
+Run the commands
 ```bash
 cd backend
 python -m venv venv
