@@ -4,3 +4,4 @@ flask
 python-dotenv
 flask-cors
 flask_mysqldb
+flask_sqlalchemy
