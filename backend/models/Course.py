@@ -7,5 +7,5 @@ db = SQLAlchemy()
 class Course(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(30))
-    desc: Mapped[str] = mapped_column()
+    desc: Mapped[str] = mapped_column(String(255))
     university_id: Mapped[Optional[str]] = mapped_column(ForeignKey("university.id"))
