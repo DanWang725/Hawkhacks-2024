@@ -9,7 +9,7 @@ from sqlalchemy import Integer, String, ForeignKey
 from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column
 from flask_sqlalchemy import SQLAlchemy
-
+from utils import getAIMockResponse
 
 load_dotenv()
 app = Flask(__name__)
@@ -53,13 +53,13 @@ class Test(db.Model):
 class TestQuestion(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     testId: Mapped[int] = mapped_column(ForeignKey("test.id"))
-    question: Mapped[str] = mapped_column(String(100))
-    opt1: Mapped[str] = mapped_column(String(100))
-    opt2: Mapped[str] = mapped_column(String(100))
-    opt3: Mapped[str] = mapped_column(String(100))
-    opt4: Mapped[str] = mapped_column(String(100))
+    question: Mapped[str] = mapped_column(String(200))
+    opt1: Mapped[str] = mapped_column(String(200))
+    opt2: Mapped[str] = mapped_column(String(200))
+    opt3: Mapped[str] = mapped_column(String(200))
+    opt4: Mapped[str] = mapped_column(String(200))
     answer: Mapped[int] = mapped_column(Integer())
-    justification: Mapped[str] = mapped_column(String(100))
+    justification: Mapped[str] = mapped_column(String(200))
 
 class UserQuestionAnswer(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -145,6 +145,7 @@ def mockPopulateTables():
     test1 = Test(dateCreated=datetime.datetime.now(), name="Test 1", desc="This is the first test", courseId=1, authorId=1)
     db.session.add(test1)
     db.session.commit()
+    print(test1.id)
 
     testQuestion1 = TestQuestion(testId=1, question="What is the capital of Canada?", opt1="Toronto", opt2="Ottawa", opt3="Montreal", opt4="Vancouver", answer=2, justification="Ottawa is the capital of Canada")
     testQuestion2 = TestQuestion(testId=1, question="What is the capital of the United States?", opt1="New York", opt2="Washington", opt3="Los Angeles", opt4="Chicago", answer=2, justification="Washington is the capital of the United States")
@@ -193,10 +194,7 @@ def getTest():
     for question in questions.fetchall():
         questionPayload = dict()
         questionPayload['question'] = question.question
-        questionPayload['opt1'] = question.opt1
-        questionPayload['opt2'] = question.opt2
-        questionPayload['opt3'] = question.opt3
-        questionPayload['opt4'] = question.opt4
+        questionPayload['options'] = [question.opt1, question.opt2, question.opt3, question.opt4]
         questionPayload['answer'] = question.answer
         questionPayload['justification'] = question.justification
         questionList.append(questionPayload)
@@ -252,9 +250,7 @@ def tests():
                 
                 numberOfCorrectAnswers = 0
                 payload['hasAttempted'] = True
-                print(testAnswers)
                 for answer in testAnswers:
-                    print(answer.isCorrect == True)
                     if(answer.isCorrect):
                         numberOfCorrectAnswers += 1
                 payload['correctQuestions'] = numberOfCorrectAnswers
@@ -263,9 +259,10 @@ def tests():
             parsedTests.append(payload)
         responsePayload = dict(tests=parsedTests, status=200, message="Success")
         return Response(json.dumps(responsePayload), 200, mimetype='application/json')
+    # should be called after uploading units
     elif (request.method == "POST"):
-        testData = request.get_json() #should contain the title, courseid, authorid, unit to use.
-        unitSummaries = db.session.execute(db.select(Unit.summary).where(Unit.courseId == testData['courseId'])).fetchall()
+        reqArgs = request.get_json() #should contain the title, courseid, authorid, unit to use [].
+        unitSummaries = db.session.execute(db.select(Unit.summary).where(Unit.courseId == int(reqArgs['courseId']))).fetchall()
         summaryString = ""
         for summary in unitSummaries:
             summaryString += summary[0] + "\n"
@@ -275,28 +272,30 @@ def tests():
             # AI logic here
             pass
         else:
+            testResponse = getAIMockResponse()
             pass
+
+        newTest = Test(dateCreated=datetime.datetime.now(), name=reqArgs['name'], desc="description", courseId=reqArgs['courseId'], authorId=reqArgs['id'])
+        db.session.add(newTest);
+        db.session.commit()
+        for question in testResponse:
+            newQuestion = TestQuestion(testId=newTest.id, question=question['question'], opt1=question['options'][0], opt2=question['options'][1], opt3=question['options'][2], opt4=question['options'][3], answer=question['answer'], justification=question['explanation'])
+            db.session.add(newQuestion)
+        
+        db.session.commit()
+        return Response("{'status': 200, 'message': 'test created'}", 200, mimetype='application/json')
+        # print(newTest.id)
   
-
-
-    
-# @app.route('/course', methods=["GET", "POST"])
-# def courses():
-#     if(request.method == "GET"):
-#         courses = db.session.exec(db.select(Course)).scalars()
-#         payload = dict()
-#         for course in courses.fetchall():
-#             coursePayload = dict()
-#             coursePayload['University'] = db.session.exec(db.select(University.name).where(University.id==course.universityId)).one()
-#             coursePayload['']
-
-    # @app.route("/test")
-# def test():
-#     # users2 = db.get_or_404(Testing);
-#     users = db.session.execute(db.select(Testing).order_by(Testing.amongUs)).scalars();
-#     bigthig = ""
-#     for user in users.fetchall():
-#         bigthig = bigthig + str(user.joelMother)
-#     return json.dumps({"hello":bigthig})
-    
-#     print( users.fetchall())
+@app.route('/testResults', methods=["POST"])
+def testResults():
+    if(request.method == "POST"):
+        reqArgs = request.get_json()
+        testId = reqArgs['testId']
+        userId = reqArgs['userId']
+        answers = reqArgs['answers']
+        testQuestions = db.session.execute(db.select(TestQuestion).where(TestQuestion.testId == testId)).scalars().fetchall()
+        for i in range(len(answers)):
+            userAnswer = UserQuestionAnswer(ownerId=userId, answer=answers[i], isCorrect=testQuestions[i].answer == answers[i], questionId=testQuestions[i].id)
+            db.session.add(userAnswer)
+        db.session.commit()
+        return Response("{'status': 200, 'message': 'test results saved'}", 200, mimetype='application/json')
