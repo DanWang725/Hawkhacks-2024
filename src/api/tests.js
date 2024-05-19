@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import { Axios } from '../axios';
 import { postCourse } from './course';
 import { postUnit } from './units';
@@ -25,6 +26,9 @@ const completePostTestProcess = async ({
     }
 
     console.log('stage2');
+    toast(
+      'Successfully uploaded all documents! Please wait for the test to generate!',
+    );
     await postTest(testName, 1, respCourse.data.id);
   } catch (error) {
     return { status: 400, ...error };

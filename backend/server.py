@@ -103,6 +103,8 @@ def createAcc():
 def createUnit():
     reqArgs = request.get_json()
     unitContent = reqArgs['content']
+    if(unitContent == None or len(unitContent) == 0):
+        return Response("{'status': 400, 'message': 'unit content is empty'}", 400, mimetype='application/json')
     isCourseExists = db.session.execute(db.select(Course.id).where(Course.id == reqArgs['courseId'])).first()
     if(isCourseExists == None):
         return Response("{'status': 400, 'message': 'course does not exist'}", 400, mimetype='application/json')
