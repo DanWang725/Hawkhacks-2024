@@ -10,6 +10,7 @@ from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column
 from flask_sqlalchemy import SQLAlchemy
 from utils import getAIMockResponse
+import ChatCompletionManager;
 
 load_dotenv()
 app = Flask(__name__)
@@ -106,14 +107,14 @@ def createUnit():
     if(isCourseExists == None):
         return Response("{'status': 400, 'message': 'course does not exist'}", 400, mimetype='application/json')
     
-    print(unitContent)
-    if(os.getenv('USE_AI') == 1):
-        # AI logic here
-        pass
-    else:
-        summary = "this is a summary of the unit! Joel has gone to scraping the barrel"
+    print("unitContent: ", unitContent)
+    # if(os.getenv('USE_AI') == 1):
+    #     # AI logic here (lol jk)
+    #     pass
+    # else:
+    #     summary = "this is a summary of the unit! Joel has gone to scraping the barrel"
 
-    newUnit = Unit(name=reqArgs['name'], summary=summary, courseId=reqArgs['courseId'], authorId=reqArgs['id'])
+    newUnit = Unit(name=reqArgs['name'], summary=unitContent, courseId=reqArgs['courseId'], authorId=reqArgs['id'])
     db.session.add(newUnit)
     db.session.commit()
     return Response("{'status': 200, 'message': 'unit created'}", 200, mimetype='application/json')
@@ -263,20 +264,23 @@ def tests():
     elif (request.method == "POST"):
         reqArgs = request.get_json() #should contain the title, courseid, authorid, unit to use [].
         unitSummaries = db.session.execute(db.select(Unit.summary).where(Unit.courseId == int(reqArgs['courseId']))).fetchall()
-        summaryString = ""
-        for summary in unitSummaries:
-            summaryString += summary[0] + "\n"
 
         if(os.environ['USE_AI'] == 1):
-            testResponse = dict()
-            # AI logic here
+            manager = ChatCompletionManager.ChatCompletionManager()
+            
+            for summary in unitSummaries:
+                openaiResponse = manager.questionsWithHistory(summary)
+                testResponse = openaiResponse.choices[0].message.content
+                
+                print("AI Response: ", testResponse)
+                print(f"It is ")
             pass
         else:
             testResponse = getAIMockResponse()
             pass
 
         newTest = Test(dateCreated=datetime.datetime.now(), name=reqArgs['name'], desc="description", courseId=reqArgs['courseId'], authorId=reqArgs['id'])
-        db.session.add(newTest);
+        db.session.add(newTest)
         db.session.commit()
         for question in testResponse:
             newQuestion = TestQuestion(testId=newTest.id, question=question['question'], opt1=question['options'][0], opt2=question['options'][1], opt3=question['options'][2], opt4=question['options'][3], answer=question['answer'], justification=question['explanation'])
