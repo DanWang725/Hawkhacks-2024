@@ -53,7 +53,7 @@ const TestCard = ({test = {}, openTestFunc})  => {
 
             
             <CardHeader
-                title = {title}
+                title = {name}
                 titleTypographyProps={{marginTop: 0, marginBottom: 0.75,
                                        marginLeft: 0,
                 }}
@@ -111,7 +111,7 @@ const TestCard = ({test = {}, openTestFunc})  => {
 
                         }}
                     >
-                        {'U: ' + (unitAmount).length}
+                        {'U: ' + (units).length}
                     </Typography>
 
                     <Typography
