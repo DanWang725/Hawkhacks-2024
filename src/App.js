@@ -1,19 +1,31 @@
-import Navbar from './navbar';
-import TestCard from './card.js'
+import CreateTest from './createTest';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import TestCard from './card.js';
+import { Button, Stack } from '@mui/material';
+import { retrieveTests } from '../../Hawkhacks-2024/src/api/tests';
+
+const theme = createTheme({
+  palette: {
+    primary: { main: '#FFAD72' },
+    secondary: { main: '#72C4FF' },
+  },
+});
 
 const App = () => {
   return (
-<<<<<<< HEAD
-    <div> 
-        <Navbar/>
-        <h1>HEHEHEHHABUGGSUS</h1>
-        <TestCard/>
-=======
-    <div>
-        <Navbar />
->>>>>>> 08d5bf383306ad3ad983192e9d698bf09fb25ce3
-    </div>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/">
+            <Route index element={<CreateTest />} />
+            <Route path="dashboard" element={<TestCard />} />
+            <Route path="create" element={<CreateTest />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
-}
+};
 
 export default App;
