@@ -1,10 +1,9 @@
-import { box, Typography, Button, Card } from '@mui/material';
+import { box, Typography, Button, Card , Grid} from '@mui/material';
 
 import TestCard from './card'
 import { retrieveTests } from '../../Hawkhacks-2024/src/api/tests';
 import Navbar from './navbar';
 import { useEffect, useState } from 'react';
-import TestCard from './card';
 
 const DashboardPage = () => {
   const [tests, setTests] = useState([]);
@@ -20,9 +19,10 @@ const DashboardPage = () => {
     });
   }, []);
 
+    
+
     return (
         <div>
-            <Navbar/>
             <Typography
                 variant="h1"
                 fontSize = {100}
@@ -44,31 +44,24 @@ const DashboardPage = () => {
                 }}
             >Other Tests</Typography>
 
-            <Grid 
+            
+
+            <Grid
                 sx = {{
-                    marginTop: -1,
+                    marginTop: 3,
                     marginLeft: 5,
 
                 }}
                 container rowSpacing = {5}
-                columnSpacing= {-95}>
-                <Grid item xs={6}> 
-                    <TestCard/>
-                </Grid>
-                <Grid item xs={6}> 
-                    <TestCard/>
-                </Grid>
-                <Grid item xs={6}> 
-                    <TestCard/>
-                </Grid>
+                columnSpacing= {-95}
+                onLoad = {() => retrieveTests(1)}>
+                <Grid>
+                {tests.map((test, index) => (
+                    <TestCard test={test} key={index} />
+                ))} </Grid>
+
             </Grid>
 
-      <Button variant="contained" onClick={() => retrieveTests(1)}>
-        {tests.map((test, index) => (
-          <TestCard test={test} key={index} />
-        ))}
-        Testing API Route
-      </Button>
     </div>
   );
 };
