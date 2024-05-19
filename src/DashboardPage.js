@@ -50,7 +50,6 @@ const DashboardPage = () => {
                 sx = {{
                     marginTop: 3,
                     marginLeft: 5,
-
                 }}
                 container rowSpacing = {5}
                 columnSpacing= {-95}
@@ -59,6 +58,24 @@ const DashboardPage = () => {
                 {tests.map((test, index) => (
                     <TestCard test={test} key={index} />
                 ))} </Grid>
+            </Grid>
+
+            <Grid
+                
+                xs={6}
+                sx = {{
+                    marginTop: -23,
+                    marginRight: 49,
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+
+                }} 
+                onLoad = {() => retrieveTests(2)}> 
+                <Grid xs={6}>
+                {tests.map((test, index) => (
+                    <TestCard test={test} key={index} />
+                ))}
+                </Grid>
 
             </Grid>
 
