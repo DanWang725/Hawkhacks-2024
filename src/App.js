@@ -6,6 +6,7 @@ import { Button, Stack } from '@mui/material';
 import { retrieveTests } from '../../Hawkhacks-2024/src/api/tests';
 import DashboardPage from './DashboardPage.js';
 import Navbar from './navbar.js';
+import QuizPage from './screens/QuizPage.js';
 
 const theme = createTheme({
   palette: {
@@ -25,6 +26,7 @@ const App = () => {
             <Route index element={<CreateTest />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="create" element={<CreateTest />} />
+            <Route path="test/:id" element={<QuizPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

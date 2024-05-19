@@ -41,6 +41,15 @@ const retrieveTests = async (userId = null, testId = null) => {
   }
 };
 
+const retrieveByTestId = async (testId) => {
+  try {
+    const { data } = await Axios.get(`/getTest`, { params: { testId } });
+    return { status: 200, data };
+  } catch (error) {
+    return { status: 200, ...error };
+  }
+};
+
 const postTest = async (name, userId, courseId) => {
   try {
     const dataPayload = {
@@ -55,4 +64,4 @@ const postTest = async (name, userId, courseId) => {
   }
 };
 
-export { retrieveTests, postTest, completePostTestProcess };
+export { retrieveTests, postTest, completePostTestProcess, retrieveByTestId };
