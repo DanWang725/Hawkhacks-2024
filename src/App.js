@@ -8,6 +8,7 @@ import DashboardPage from './DashboardPage.js';
 import Navbar from './navbar.js';
 import QuizPage from './screens/QuizPage.js';
 import { Toaster } from 'react-hot-toast';
+import HomePage from './screens/HomePage.js';
 
 const theme = createTheme({
   palette: {
