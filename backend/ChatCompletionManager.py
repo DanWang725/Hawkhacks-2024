@@ -225,3 +225,32 @@ if __name__ == "__main__":
     # print("\n\n")
     # manager.questions_with_history(example_notes)
 
+
+
+
+# EXAMPLE CHAT COMPLETION:
+
+# ChatCompletion(
+    # id='chatcmpl-9PAb00yo0JFYquLDNxpV9IqMY1vK2', 
+    # choices=[
+        # Choice(finish_reason='stop', 
+        # index=0, 
+        # logprobs=None, 
+        # message=ChatCompletionMessage(
+            # content='```{\n    {\n    "question": "What operation on images is typically used to reduce noise?",\n    "options": ["Multiplication", "Addition", "Subtraction", "Division"],\n    "answer": 2\n    },\n    {\n    "question": "What is the main purpose of using Vegetation Index (VI) in image analysis?",\n    "options": ["To create natural images", "To increase sunlight exposure", "To quantify vegetation characteristics", "To remove background noise"],\n    "answer": 3\n    },\n    {\n    "question": "What does the Near-Infrared (NIR) wavelength reflectance in vegetation vary with?",\n    "options": ["Leaf thickness and coating", "Leaf color", "Plant height", "Number of leaves"],\n    "answer": 1\n    },\n    {\n    "question": "What is the purpose of using NDVI in remote sensing applications?",\n    "options": ["To add noise to the images", "To remove vegetation from images", "To estimate vegetation productivity and health", "To reduce image resolution"],\n    "answer": 3\n    },\n    {\n    "question": "How does NDVI differ from a simple ratio in image analysis?",\n    "options": ["NDVI uses only red light, while the simple ratio uses all spectral bands", "NDVI is a linear transform of the simple ratio", "NDVI is affected by absolute pixel values in different bands", "Simple ratios remove multiplicative noise from images"],\n    "answer": 2\n    }\n}```', 
+            # role='assistant', 
+            # function_call=None, 
+            # tool_calls=None
+            # )
+        # )
+    # ], 
+    # created=1715785958, 
+    # model='gpt-3.5-turbo-0125', 
+    # object='chat.completion', 
+    # system_fingerprint=None, 
+    # usage=CompletionUsage(
+        # completion_tokens=315, 
+        # prompt_tokens=985, 
+        # total_tokens=1300
+    # )
+# )

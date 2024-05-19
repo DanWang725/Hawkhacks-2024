@@ -273,7 +273,6 @@ def tests():
                 testResponse = openaiResponse.choices[0].message.content
                 
                 print("AI Response: ", testResponse)
-                print(f"It is ")
             pass
         else:
             testResponse = getAIMockResponse()
