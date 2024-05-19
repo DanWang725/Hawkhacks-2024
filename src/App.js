@@ -1,14 +1,22 @@
-import Navbar from './navbar';
-import TestCard from './card.js'
+import CreateTest from './createTest';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import TestCard from './card.js';
+
+const theme = createTheme({
+  palette: {
+    primary: { main: '#FFAD72' },
+    secondary: { main: '#72C4FF' },
+  },
+});
 
 const App = () => {
   return (
-    <div> 
-        <Navbar/>
-        <h1>HEHEHEHHABUGGSUS</h1>
-        <TestCard/>
-    </div>
+    <>
+      <ThemeProvider theme={theme}>
+        <CreateTest />
+      </ThemeProvider>
+    </>
   );
-}
+};
 
 export default App;
