@@ -19,7 +19,7 @@ In addition, you must follow the following rules no matter what:
 ]```
 where "answer" is the index of the correct response in the "options" array from 0 to 3.
 
-2. You must ask around 15 questions unless the notes are so short that it is not possible.
+2. You must ask around 10 questions unless the notes are so short that it is not possible.
 
 3. You must ask questions that are relevant to the notes provided, and that are answerable by a student who has studied the notes.
 
