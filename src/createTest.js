@@ -1,65 +1,7 @@
 import { TextField, Box, Button } from '@mui/material';
 import Navbar from './navbar';
 import { useState, useRef } from 'react';
-
-const UnitField = ({
-  className,
-  index,
-  uuid,
-  numUnits,
-  setNumUnits,
-  onTitleChange,
-  onTextChange,
-}) => {
-  const [titleValue, setTitleValue] = useState('');
-  const [textValue, setTextValue] = useState('');
-  console.log('rendered unit:', index, 'with uuid:', uuid);
-
-  return (
-    <div className={'mt-8' + className}>
-      <TextField
-        required
-        id="unitTitle"
-        label="Unit Title"
-        variant="standard"
-        value={titleValue}
-        onChange={(e) => {
-          setTitleValue(e.target.value);
-          onTitleChange(index, e.target.value);
-        }}
-      />
-
-      <TextField
-        multiline
-        style={{ width: '100%' }}
-        className="text-sm leading-normal p-3 rounded-xl rounded-br-none shadow-lg shadow-slate-100 focus:shadow-outline-primary focus:shadow-lg border border-solid hover:border-primary focus:border-primary bg-white focus-visible:outline-0 box-border"
-        aria-label="Your notes here"
-        placeholder="Your Notes Here..."
-        minRows={10}
-        maxRows={15}
-        value={textValue}
-        onChange={(e) => {
-          setTextValue(e.target.value);
-          onTextChange(index, e.target.value);
-        }}
-      />
-
-      {index === numUnits - 1 ? (
-        <div className="w-fit mx-auto">
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => {
-              setNumUnits(numUnits + 1);
-            }}
-          >
-            Add New Unit
-          </Button>
-        </div>
-      ) : null}
-    </div>
-  );
-};
+import UnitField from './unitField';
 
 const CreateTest = () => {
   const [numUnits, setNumUnits] = useState(1);
@@ -74,12 +16,15 @@ const CreateTest = () => {
         sx={{
           '& .MuiTextField-root': { m: 1, width: '25ch' },
           width: '100%',
+          marginBottom: '10rem',
         }}
         noValidate
         autoComplete="off"
       >
-        <div className="w-[45rem] mx-auto my-8">
-          <div>
+        <div className="w-[45rem] mx-auto my-16">
+          <h1 className="text-4xl font-bold text-center">Create Test</h1>
+
+          <div className="w-fit mx-auto mt-6 mb-4">
             <TextField
               required
               id="testName"
@@ -94,7 +39,7 @@ const CreateTest = () => {
             />
           </div>
 
-          <div>
+          <div className="w-fit mx-auto mt-4 mb-8">
             <TextField
               required
               id="courseCode"
@@ -108,25 +53,43 @@ const CreateTest = () => {
             <UnitField
               key={id}
               index={index}
-              uuid={id}
-              numUnits={numUnits}
-              setNumUnits={setNumUnits}
               onTitleChange={(index, value) => {
-                console.log('Title Change:', index, value);
                 const newUnitTitles = { ...unitTitles };
                 newUnitTitles[index] = value;
                 unitTitles.current = newUnitTitles;
-                console.log(unitTitles);
               }}
               onTextChange={(index, value) => {
-                console.log('Text Change:', index, value);
                 const newUnitTexts = { ...unitTexts };
                 newUnitTexts[index] = value;
                 unitTexts.current = newUnitTexts;
-                console.log(unitTexts);
               }}
             />
           ))}
+
+          <div className="w-full mt-2 flex">
+            <div className="ml-[8px] w-fit flex">
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => {
+                  setNumUnits(numUnits + 1);
+                }}
+              >
+                Add New Unit
+              </Button>
+            </div>
+
+            <div className="mr-[8px] ml-auto w-fit">
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                sx={{ color: 'white' }}
+              >
+                Submit
+              </Button>
+            </div>
+          </div>
         </div>
       </Box>
     </>
