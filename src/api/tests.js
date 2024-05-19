@@ -29,7 +29,8 @@ const completePostTestProcess = async ({
     toast(
       'Successfully uploaded all documents! Please wait for the test to generate!',
     );
-    await postTest(testName, 1, respCourse.data.id);
+    const responseTest = await postTest(testName, 1, respCourse.data.id);
+    return { status: 200, ...responseTest };
   } catch (error) {
     return { status: 400, ...error };
   }

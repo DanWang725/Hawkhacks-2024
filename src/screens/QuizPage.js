@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { retrieveByTestId } from '../api/tests';
 import { useEffect, useState } from 'react';
+import TestPage from '../testPage';
 
 const QuizPage = () => {
   const { id } = useParams();
@@ -18,14 +19,10 @@ const QuizPage = () => {
   }, [testData]);
   return testData ? (
     <div>
-      <>
-        <h1>{testData.name}</h1>
-        <h2>{testData.courseName}</h2>
-        <h3>{testData.courseCode}</h3>
-        <h4>{testData.university}</h4>
-        <h5>{testData.unitName}</h5>
-        <h6>{testData.unitContent}</h6>
-      </>
+      <TestPage
+        questionBank={testData.questions}
+        testName={testData.name}
+      ></TestPage>
     </div>
   ) : (
     <h1>Loading...</h1>

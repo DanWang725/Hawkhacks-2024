@@ -1,8 +1,10 @@
 import { Box } from '@mui/system';
 import { Button } from '@mui/material';
 import Question from './testQuestion';
+import { useState } from 'react';
 
-const TestPage = () => {
+const TestPage = ({ questionBank, testName }) => {
+  const [isFinished, setIsFinished] = useState(false);
   return (
     <>
       <Box
@@ -20,10 +22,19 @@ const TestPage = () => {
         autoComplete="off"
       >
         <div className="w-[45rem] mx-auto my-16">
-          <h1 className="text-6xl font-bold">Test Name</h1>
-          <h2 className="text-3xl mt-8">Unit x: Name</h2>
+          <h1 className="text-6xl font-bold">{testName}</h1>
+          {questionBank.map((question, index) => {
+            return (
+              <Question
+                key={index}
+                questionNum={index}
+                showAnswer={isFinished}
+                {...question}
+              />
+            );
+          })}
 
-          <Question
+          {/* <Question
             questionNum={1}
             question="Who is the most Abungy Mungy?"
             options={['Joel', 'Daniel Amongstusus', 'Kirisan', 'Myron (fish)']}
@@ -33,7 +44,7 @@ const TestPage = () => {
             questionNum={2}
             question="Who is the least Abungy Mungy?"
             options={['Joel', 'Daniel Amongstusus', 'Kirisan', 'Myron (fish)']}
-          />
+          /> */}
 
           <div className="mt-4 ml-8 w-fit">
             <Button
@@ -41,6 +52,9 @@ const TestPage = () => {
               variant="contained"
               color="primary"
               sx={{ color: 'white' }}
+              onClick={() => {
+                setIsFinished(true);
+              }}
             >
               Submit
             </Button>
