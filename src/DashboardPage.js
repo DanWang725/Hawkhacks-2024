@@ -2,8 +2,10 @@ import {
     box,
     Typography,
     Button,
+    Grid,
 } from '@mui/material';
 
+import TestCard from './card'
 import { retrieveTests } from '../../Hawkhacks-2024/src/api/tests';
 import Navbar from './navbar';
 
@@ -12,19 +14,49 @@ const DashboardPage = () => {
 
     const data = retrieveTests(1)
 
-
-
     return (
         <div>
             <Navbar/>
-            <Button
-                variant="contained"
-                onClick = {() =>
-                    retrieveTests(1)
-                }
-            > Testing API Route</Button>
+            <Typography
+                variant="h1"
+                fontSize = {100}
+                color = "#72C4FF"
+                sx = {{
+                    marginLeft: 28,
+                    marginTop: 5,
+                }}
+            > My Tests</Typography>
+            <Typography
+                variant="h2"
+                fontSize = {100}
+                color = "#0067B1"
+                sx = {{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    marginTop: -15,
+                    marginRight: 10,
+                }}
+            >Other Tests</Typography>
 
-            
+            <Grid 
+                sx = {{
+                    marginTop: -1,
+                    marginLeft: 5,
+
+                }}
+                container rowSpacing = {5}
+                columnSpacing= {-95}>
+                <Grid item xs={6}> 
+                    <TestCard/>
+                </Grid>
+                <Grid item xs={6}> 
+                    <TestCard/>
+                </Grid>
+                <Grid item xs={6}> 
+                    <TestCard/>
+                </Grid>
+            </Grid>
+
         </div>
     )
 }
