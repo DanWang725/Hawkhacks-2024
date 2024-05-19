@@ -194,10 +194,7 @@ def getTest():
     for question in questions.fetchall():
         questionPayload = dict()
         questionPayload['question'] = question.question
-        questionPayload['opt1'] = question.opt1
-        questionPayload['opt2'] = question.opt2
-        questionPayload['opt3'] = question.opt3
-        questionPayload['opt4'] = question.opt4
+        questionPayload['options'] = [question.opt1, question.opt2, question.opt3, question.opt4]
         questionPayload['answer'] = question.answer
         questionPayload['justification'] = question.justification
         questionList.append(questionPayload)
@@ -253,9 +250,7 @@ def tests():
                 
                 numberOfCorrectAnswers = 0
                 payload['hasAttempted'] = True
-                print(testAnswers)
                 for answer in testAnswers:
-                    print(answer.isCorrect == True)
                     if(answer.isCorrect):
                         numberOfCorrectAnswers += 1
                 payload['correctQuestions'] = numberOfCorrectAnswers
@@ -266,7 +261,7 @@ def tests():
         return Response(json.dumps(responsePayload), 200, mimetype='application/json')
     # should be called after uploading units
     elif (request.method == "POST"):
-        reqArgs = request.get_json() #should contain the title, courseid, authorid, unit to use.
+        reqArgs = request.get_json() #should contain the title, courseid, authorid, unit to use [].
         unitSummaries = db.session.execute(db.select(Unit.summary).where(Unit.courseId == int(reqArgs['courseId']))).fetchall()
         summaryString = ""
         for summary in unitSummaries:
@@ -291,26 +286,16 @@ def tests():
         return Response("{'status': 200, 'message': 'test created'}", 200, mimetype='application/json')
         # print(newTest.id)
   
-
-
-    
-# @app.route('/course', methods=["GET", "POST"])
-# def courses():
-#     if(request.method == "GET"):
-#         courses = db.session.exec(db.select(Course)).scalars()
-#         payload = dict()
-#         for course in courses.fetchall():
-#             coursePayload = dict()
-#             coursePayload['University'] = db.session.exec(db.select(University.name).where(University.id==course.universityId)).one()
-#             coursePayload['']
-
-    # @app.route("/test")
-# def test():
-#     # users2 = db.get_or_404(Testing);
-#     users = db.session.execute(db.select(Testing).order_by(Testing.amongUs)).scalars();
-#     bigthig = ""
-#     for user in users.fetchall():
-#         bigthig = bigthig + str(user.joelMother)
-#     return json.dumps({"hello":bigthig})
-    
-#     print( users.fetchall())
+@app.route('/testResults', methods=["POST"])
+def testResults():
+    if(request.method == "POST"):
+        reqArgs = request.get_json()
+        testId = reqArgs['testId']
+        userId = reqArgs['userId']
+        answers = reqArgs['answers']
+        testQuestions = db.session.execute(db.select(TestQuestion).where(TestQuestion.testId == testId)).scalars().fetchall()
+        for i in range(len(answers)):
+            userAnswer = UserQuestionAnswer(ownerId=userId, answer=answers[i], isCorrect=testQuestions[i].answer == answers[i], questionId=testQuestions[i].id)
+            db.session.add(userAnswer)
+        db.session.commit()
+        return Response("{'status': 200, 'message': 'test results saved'}", 200, mimetype='application/json')
