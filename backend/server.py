@@ -124,7 +124,10 @@ def createCourse():
     newCourse = Course(name=reqArgs['name'], code=reqArgs['code'], desc=reqArgs['desc'], university=reqArgs['university'])
     db.session.add(newCourse)
     db.session.commit()
-    return Response("{'status': 200, 'message': 'course created'}", 200, mimetype='application/json')
+    returnPayload = dict()
+    returnPayload['status'] = 200
+    returnPayload['id'] = newCourse.id
+    return Response(json.dumps(returnPayload), 200, mimetype='application/json')
 
 @app.route("/mockPopulateTables")
 def mockPopulateTables():
