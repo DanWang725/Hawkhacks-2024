@@ -1,9 +1,20 @@
 import { TextField, Box, Button } from '@mui/material';
 import Navbar from './navbar';
-import { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { useState, useRef } from 'react';
 
-const UnitField = ({ className, isNewest, numUnits, setNumUnits }) => {
+const UnitField = ({
+  className,
+  index,
+  uuid,
+  numUnits,
+  setNumUnits,
+  onTitleChange,
+  onTextChange,
+}) => {
+  const [titleValue, setTitleValue] = useState('');
+  const [textValue, setTextValue] = useState('');
+  console.log('rendered unit:', index, 'with uuid:', uuid);
+
   return (
     <div className={'mt-8' + className}>
       <TextField
@@ -11,6 +22,11 @@ const UnitField = ({ className, isNewest, numUnits, setNumUnits }) => {
         id="unitTitle"
         label="Unit Title"
         variant="standard"
+        value={titleValue}
+        onChange={(e) => {
+          setTitleValue(e.target.value);
+          onTitleChange(index, e.target.value);
+        }}
       />
 
       <TextField
@@ -21,9 +37,14 @@ const UnitField = ({ className, isNewest, numUnits, setNumUnits }) => {
         placeholder="Your Notes Here..."
         minRows={10}
         maxRows={15}
+        value={textValue}
+        onChange={(e) => {
+          setTextValue(e.target.value);
+          onTextChange(index, e.target.value);
+        }}
       />
 
-      {isNewest ? (
+      {index === numUnits - 1 ? (
         <div className="w-fit mx-auto">
           <Button
             variant="outlined"
@@ -42,6 +63,8 @@ const UnitField = ({ className, isNewest, numUnits, setNumUnits }) => {
 
 const CreateTest = () => {
   const [numUnits, setNumUnits] = useState(1);
+  const unitTitles = useRef({ 0: '' });
+  const unitTexts = useRef({ 0: '' });
 
   return (
     <>
@@ -81,12 +104,27 @@ const CreateTest = () => {
             <TextField id="courseName" label="Course Name" variant="standard" />
           </div>
 
-          {Array.from({ length: numUnits }, () => uuidv4()).map((id, index) => (
+          {[...Array(numUnits).keys()].map((id, index) => (
             <UnitField
               key={id}
-              isNewest={index === numUnits - 1}
+              index={index}
+              uuid={id}
               numUnits={numUnits}
               setNumUnits={setNumUnits}
+              onTitleChange={(index, value) => {
+                console.log('Title Change:', index, value);
+                const newUnitTitles = { ...unitTitles };
+                newUnitTitles[index] = value;
+                unitTitles.current = newUnitTitles;
+                console.log(unitTitles);
+              }}
+              onTextChange={(index, value) => {
+                console.log('Text Change:', index, value);
+                const newUnitTexts = { ...unitTexts };
+                newUnitTexts[index] = value;
+                unitTexts.current = newUnitTexts;
+                console.log(unitTexts);
+              }}
             />
           ))}
         </div>
