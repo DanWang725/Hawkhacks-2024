@@ -37,7 +37,7 @@ const TestCard = ({test = {}, openTestFunc})  => {
         <Card
             sx={{
                 height: 200,
-                width: 500,
+                width: 350,
                 maxHeight: 175,
                 border: '1px solid lightgray',
                 boxShadow: 3,
@@ -111,7 +111,7 @@ const TestCard = ({test = {}, openTestFunc})  => {
 
                         }}
                     >
-                        {'U: ' + (units).length}
+                        {'U: ' + (unitAmount).length}
                     </Typography>
 
                     <Typography
