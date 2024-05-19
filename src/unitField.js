@@ -21,8 +21,10 @@ const UnitField = ({
         variant="standard"
         value={titleValue}
         onChange={(e) => {
-          setTitleValue(e.target.value);
-          onTitleChange(index, e.target.value);
+          var str = e.target.value;
+          if (e.target.value.length > 20) str = str.substring(0, 20);
+          setTitleValue(str);
+          onTitleChange(index, str);
         }}
       />
 
@@ -34,11 +36,13 @@ const UnitField = ({
         aria-label="Your notes here"
         placeholder="Your Notes Here..."
         minRows={10}
-        maxRows={15}
+        maxRows={30}
         value={textValue}
         onChange={(e) => {
-          setTextValue(e.target.value);
-          onTextChange(index, e.target.value);
+          var str = e.target.value;
+          if (e.target.value.length > 10000) str = str.substring(0, 9999);
+          setTextValue(str);
+          onTextChange(index, str);
         }}
       />
     </div>
