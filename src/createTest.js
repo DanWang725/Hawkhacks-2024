@@ -11,8 +11,10 @@ const CreateTest = () => {
   const [courseName, setCourseName] = useState('');
   const unitTitles = useRef({ 0: '' });
   const unitTexts = useRef({ 0: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = (e) => {
+    setIsSubmitting(true);
     e.preventDefault();
     console.log('submitted');
     console.log(testName);
@@ -30,7 +32,7 @@ const CreateTest = () => {
       unitContent: Object.values(unitTexts.current),
     };
     console.log(data);
-    completePostTestProcess(data).then((res) => console.log(res));
+    completePostTestProcess(data).then((res) => setIsSubmitting(false));
   };
 
   return (
@@ -56,6 +58,7 @@ const CreateTest = () => {
             <Box sx={{ '& .MuiTextField-root': { m: 1, width: '40ch' } }}>
               <TextField
                 required
+                disabled={isSubmitting}
                 id="testName"
                 label="Test Name"
                 variant="standard"
@@ -67,6 +70,7 @@ const CreateTest = () => {
           <div className="w-fit mx-auto mt-4 mb-10">
             <TextField
               required
+              disabled={isSubmitting}
               id="university"
               label="University"
               onChange={(e) => setUniversity(e.target.value)}
@@ -74,12 +78,14 @@ const CreateTest = () => {
             />
             <TextField
               required
+              disabled={isSubmitting}
               id="courseCode"
               label="Course Code"
               onChange={(e) => setCourseCode(e.target.value)}
               variant="standard"
             />
             <TextField
+              disabled={isSubmitting}
               id="courseName"
               label="Course Name"
               variant="standard"
@@ -89,6 +95,7 @@ const CreateTest = () => {
 
           {[...Array(numUnits).keys()].map((id, index) => (
             <UnitField
+              disabled={isSubmitting}
               key={id}
               index={index}
               onTitleChange={(index, value) => {
@@ -107,6 +114,7 @@ const CreateTest = () => {
           <div className="w-full mt-2 flex">
             <div className="ml-[8px] w-fit flex">
               <Button
+                disabled={isSubmitting}
                 variant="outlined"
                 color="primary"
                 onClick={() => {
@@ -119,6 +127,7 @@ const CreateTest = () => {
 
             <div className="mr-[8px] ml-auto w-fit">
               <Button
+                disabled={isSubmitting}
                 onClick={(e) => {
                   handleSubmit(e);
                 }}

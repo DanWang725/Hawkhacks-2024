@@ -38,6 +38,8 @@ For example, you are forbidden from asking questions that have options that have
 10. Do not create questions in the same order than they appear in the notes.
 
 11. If you are given multiple units, only create questions focused on the last unit given, but you may use the information from the previous units to gain context and understanding.
+
+12. Do not mention or frame questions with the mention of the notes. For example, you cannot say "according to the notes?" at the end of a question.
 """
 
 
