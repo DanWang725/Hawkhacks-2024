@@ -10,6 +10,7 @@ from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column
 from flask_sqlalchemy import SQLAlchemy
 
+
 load_dotenv()
 app = Flask(__name__)
 CORS(app)
@@ -62,6 +63,7 @@ class TestQuestion(db.Model):
 
 class UserQuestionAnswer(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    ownerId: Mapped[int] = mapped_column(ForeignKey("user.id"))
     answer: Mapped[int] = mapped_column(Integer())
     isCorrect: Mapped[bool] = mapped_column(db.Boolean)
     questionId: Mapped[int] = mapped_column(ForeignKey("test_question.id"))
@@ -96,7 +98,33 @@ def createAcc():
     db.session.commit();
     return reqArgs
 
+@app.route("/unit", methods=['POST'])
+def createUnit():
+    reqArgs = request.get_json()
+    unitContent = reqArgs['content']
+    isCourseExists = db.session.execute(db.select(Course.id).where(Course.id == reqArgs['courseId'])).first()
+    if(isCourseExists == None):
+        return Response("{'status': 400, 'message': 'course does not exist'}", 400, mimetype='application/json')
+    
+    print(unitContent)
+    if(os.getenv('USE_AI') == 1):
+        # AI logic here
+        pass
+    else:
+        summary = "this is a summary of the unit! Joel has gone to scraping the barrel"
 
+    newUnit = Unit(name=reqArgs['name'], summary=summary, courseId=reqArgs['courseId'], authorId=reqArgs['id'])
+    db.session.add(newUnit)
+    db.session.commit()
+    return Response("{'status': 200, 'message': 'unit created'}", 200, mimetype='application/json')
+
+@app.route("/course", methods=['POST'])
+def createCourse():
+    reqArgs = request.get_json()
+    newCourse = Course(name=reqArgs['name'], code=reqArgs['code'], desc=reqArgs['desc'], university=reqArgs['university'])
+    db.session.add(newCourse)
+    db.session.commit()
+    return Response("{'status': 200, 'message': 'course created'}", 200, mimetype='application/json')
 
 @app.route("/mockPopulateTables")
 def mockPopulateTables():
@@ -129,14 +157,29 @@ def mockPopulateTables():
 
 @app.route("/mockTestResults", methods=["GET"])
 def mockTestResults():
-    mockAnswerToQuestion1 = UserQuestionAnswer(answer=2, isCorrect=True, questionId=1)
-    mockAnswerToQuestion2 = UserQuestionAnswer(answer=2, isCorrect=True, questionId=2)
-    mockAnswerToQuestion3 = UserQuestionAnswer(answer=3, isCorrect=False, questionId=3)
+    mockAnswerToQuestion1 = UserQuestionAnswer(answer=2, isCorrect=True, questionId=1, ownerId=1)
+    mockAnswerToQuestion2 = UserQuestionAnswer(answer=2, isCorrect=True, questionId=2, ownerId=1)
+    mockAnswerToQuestion3 = UserQuestionAnswer(answer=3, isCorrect=False, questionId=3, ownerId=1)
     db.session.add(mockAnswerToQuestion1)
     db.session.add(mockAnswerToQuestion2)
     db.session.add(mockAnswerToQuestion3)
     db.session.commit()
     return "Test results populated"
+
+
+
+@app.route("/createTest", methods=["POST"])
+def createTest():
+    reqArgs = request.get_json()
+    isCourseExists = db.session.execute(db.select(Course.id).where(Course.id == reqArgs['courseId'])).first()
+    if(isCourseExists == None):
+        return Response("{'status': 400, 'message': 'course does not exist'}", 400, mimetype='application/json')
+    
+    newTest = Test(dateCreated=datetime.datetime.now(), name=reqArgs['name'], desc=reqArgs['desc'], courseId=reqArgs['courseId'], authorId=reqArgs['id'])
+    db.session.add(newTest)
+    db.session.commit()
+    return Response("{'status': 200, 'message': 'test created'}", 200, mimetype='application/json')
+
 
 @app.route("/getTest", methods=["GET"])
 def getTest():
@@ -182,27 +225,60 @@ def tests():
         
         parsedTests = []
         for test in tests.fetchall():
+
             payload = dict()
-            print(test.courseId)
+
             course = db.session.execute(db.select(Course.code, Course.university).where(Course.id == test.courseId)).one()
             units = db.session.execute(db.select(Unit.name).where(Unit.courseId == test.id)).all();
             questions = db.session.execute(db.select(TestQuestion).where(TestQuestion.testId == test.id)).fetchall()
             questionCount = len(questions)
-            answerCount = db.session.execute(db.select(UserQuestionAnswer).where(UserQuestionAnswer.questionId == TestQuestion.id, ).where(UserQuestionAnswer.answer == userId)).all()
-            hasAttemptedTest = len(answerCount)
+
+            testAnswers = db.session.execute(
+                db.select(UserQuestionAnswer)
+                .join(TestQuestion, UserQuestionAnswer.questionId == TestQuestion.id)
+                .where(TestQuestion.testId == test.id)
+                .where(UserQuestionAnswer.ownerId == userId)
+                ).scalars().fetchall()
+            
+            hasAttemptedTest = len(testAnswers)
             payload['courseCode'] = course[0]
             payload['name'] =  test.name
             payload['date'] = str(test.dateCreated.timestamp())
             payload['university'] = course[1]
             payload['units'] = [ str(u[0]) for u in units]
             payload['questionAmount'] = questionCount
+
             if(hasAttemptedTest > 0):
+                
+                numberOfCorrectAnswers = 0
                 payload['hasAttempted'] = True
-                payload['correctQuestions'] = db.session.execute(db.select(UserQuestionAnswer).where(UserQuestionAnswer.questionId == test.id).where(UserQuestionAnswer.answer == userId).where(UserQuestionAnswer.isCorrect == True)).count()    
+                print(testAnswers)
+                for answer in testAnswers:
+                    print(answer.isCorrect == True)
+                    if(answer.isCorrect):
+                        numberOfCorrectAnswers += 1
+                payload['correctQuestions'] = numberOfCorrectAnswers
+
             
             parsedTests.append(payload)
         responsePayload = dict(tests=parsedTests, status=200, message="Success")
         return Response(json.dumps(responsePayload), 200, mimetype='application/json')
+    elif (request.method == "POST"):
+        testData = request.get_json() #should contain the title, courseid, authorid, unit to use.
+        unitSummaries = db.session.execute(db.select(Unit.summary).where(Unit.courseId == testData['courseId'])).fetchall()
+        summaryString = ""
+        for summary in unitSummaries:
+            summaryString += summary[0] + "\n"
+
+        if(os.environ['USE_AI'] == 1):
+            testResponse = dict()
+            # AI logic here
+            pass
+        else:
+            pass
+  
+
+
     
 # @app.route('/course', methods=["GET", "POST"])
 # def courses():
