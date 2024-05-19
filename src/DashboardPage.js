@@ -10,6 +10,10 @@ import Navbar from './navbar';
 
 const DashboardPage = () => {
 
+    const data = retrieveTests(1)
+
+
+
     return (
         <div>
             <Navbar/>
@@ -19,6 +23,8 @@ const DashboardPage = () => {
                     retrieveTests(1)
                 }
             > Testing API Route</Button>
+
+            
         </div>
     )
 }
