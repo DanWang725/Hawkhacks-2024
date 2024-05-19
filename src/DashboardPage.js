@@ -21,7 +21,6 @@ const DashboardPage = () => {
 
   return (
     <div>
-      <Navbar />
       <Typography
         variant="h1"
         fontSize={100}
@@ -50,30 +49,20 @@ const DashboardPage = () => {
 
       <Grid
         sx={{
-          marginTop: -1,
+          marginTop: 3,
           marginLeft: 5,
         }}
         container
         rowSpacing={5}
         columnSpacing={-95}
+        onLoad={() => retrieveTests(1)}
       >
-        <Grid item xs={6}>
-          <TestCard />
-        </Grid>
-        <Grid item xs={6}>
-          <TestCard />
-        </Grid>
-        <Grid item xs={6}>
-          <TestCard />
+        <Grid>
+          {tests.map((test, index) => (
+            <TestCard test={test} key={index} />
+          ))}{' '}
         </Grid>
       </Grid>
-
-      <Button variant="contained" onClick={() => retrieveTests(1)}>
-        {tests.map((test, index) => (
-          <TestCard test={test} key={index} />
-        ))}
-        Testing API Route
-      </Button>
     </div>
   );
 };

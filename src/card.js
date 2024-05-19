@@ -125,7 +125,7 @@ const TestCard = ({test = {}, openTestFunc})  => {
                             fontWeight: 550,
                         }}
 
-                    > {courseCode + 'hi'}
+                    > {courseCode}
                     </Typography>
                     
                 </Box>
