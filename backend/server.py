@@ -9,7 +9,7 @@ from sqlalchemy import Integer, String, ForeignKey
 from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column
 from flask_sqlalchemy import SQLAlchemy
-
+from utils import getAIMockResponse
 
 load_dotenv()
 app = Flask(__name__)
@@ -53,13 +53,13 @@ class Test(db.Model):
 class TestQuestion(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     testId: Mapped[int] = mapped_column(ForeignKey("test.id"))
-    question: Mapped[str] = mapped_column(String(100))
-    opt1: Mapped[str] = mapped_column(String(100))
-    opt2: Mapped[str] = mapped_column(String(100))
-    opt3: Mapped[str] = mapped_column(String(100))
-    opt4: Mapped[str] = mapped_column(String(100))
+    question: Mapped[str] = mapped_column(String(200))
+    opt1: Mapped[str] = mapped_column(String(200))
+    opt2: Mapped[str] = mapped_column(String(200))
+    opt3: Mapped[str] = mapped_column(String(200))
+    opt4: Mapped[str] = mapped_column(String(200))
     answer: Mapped[int] = mapped_column(Integer())
-    justification: Mapped[str] = mapped_column(String(100))
+    justification: Mapped[str] = mapped_column(String(200))
 
 class UserQuestionAnswer(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -145,6 +145,7 @@ def mockPopulateTables():
     test1 = Test(dateCreated=datetime.datetime.now(), name="Test 1", desc="This is the first test", courseId=1, authorId=1)
     db.session.add(test1)
     db.session.commit()
+    print(test1.id)
 
     testQuestion1 = TestQuestion(testId=1, question="What is the capital of Canada?", opt1="Toronto", opt2="Ottawa", opt3="Montreal", opt4="Vancouver", answer=2, justification="Ottawa is the capital of Canada")
     testQuestion2 = TestQuestion(testId=1, question="What is the capital of the United States?", opt1="New York", opt2="Washington", opt3="Los Angeles", opt4="Chicago", answer=2, justification="Washington is the capital of the United States")
@@ -263,9 +264,10 @@ def tests():
             parsedTests.append(payload)
         responsePayload = dict(tests=parsedTests, status=200, message="Success")
         return Response(json.dumps(responsePayload), 200, mimetype='application/json')
+    # should be called after uploading units
     elif (request.method == "POST"):
-        testData = request.get_json() #should contain the title, courseid, authorid, unit to use.
-        unitSummaries = db.session.execute(db.select(Unit.summary).where(Unit.courseId == testData['courseId'])).fetchall()
+        reqArgs = request.get_json() #should contain the title, courseid, authorid, unit to use.
+        unitSummaries = db.session.execute(db.select(Unit.summary).where(Unit.courseId == int(reqArgs['courseId']))).fetchall()
         summaryString = ""
         for summary in unitSummaries:
             summaryString += summary[0] + "\n"
@@ -275,7 +277,19 @@ def tests():
             # AI logic here
             pass
         else:
+            testResponse = getAIMockResponse()
             pass
+
+        newTest = Test(dateCreated=datetime.datetime.now(), name=reqArgs['name'], desc="description", courseId=reqArgs['courseId'], authorId=reqArgs['id'])
+        db.session.add(newTest);
+        db.session.commit()
+        for question in testResponse:
+            newQuestion = TestQuestion(testId=newTest.id, question=question['question'], opt1=question['options'][0], opt2=question['options'][1], opt3=question['options'][2], opt4=question['options'][3], answer=question['answer'], justification=question['explanation'])
+            db.session.add(newQuestion)
+        
+        db.session.commit()
+        return Response("{'status': 200, 'message': 'test created'}", 200, mimetype='application/json')
+        # print(newTest.id)
   
 
 
