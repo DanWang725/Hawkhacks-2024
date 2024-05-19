@@ -8,6 +8,7 @@ import DashboardPage from './DashboardPage.js';
 import Navbar from './navbar.js';
 import QuizPage from './screens/QuizPage.js';
 import { Toaster } from 'react-hot-toast';
+import HomePage from './screens/HomePage.js';
 
 const theme = createTheme({
   palette: {
@@ -24,7 +25,8 @@ const App = () => {
         <Navbar />
         <Routes>
           <Route path="/">
-            <Route index element={<CreateTest />} />
+            <Route index element={<HomePage />} />
+            <Route path="home" element={<HomePage />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="create" element={<CreateTest />} />
             <Route path="test/:id" element={<QuizPage />} />
