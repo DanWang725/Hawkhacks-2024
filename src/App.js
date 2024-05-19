@@ -7,11 +7,7 @@ import { retrieveTests } from '../../Hawkhacks-2024/src/api/tests';
 import DashboardPage from './DashboardPage.js';
 import Navbar from './navbar.js';
 import QuizPage from './screens/QuizPage.js';
-<<<<<<< HEAD
-import HomePage from './screens/HomePage.js';
-=======
 import { Toaster } from 'react-hot-toast';
->>>>>>> 7ce2035c73f14c3d608bbb728eea375cc69cf5b8
 
 const theme = createTheme({
   palette: {
@@ -29,7 +25,7 @@ const App = () => {
         <Routes>
           <Route path="/">
             <Route index element={<HomePage />} />
-            <Route path="home" element={<HomePage/>} />
+            <Route path="home" element={<HomePage />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="create" element={<CreateTest />} />
             <Route path="test/:id" element={<QuizPage />} />
