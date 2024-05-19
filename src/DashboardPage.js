@@ -1,6 +1,6 @@
-import { box, Typography, Button, Card , Grid} from '@mui/material';
+import { box, Typography, Button, Card, Grid } from '@mui/material';
 
-import TestCard from './card'
+import TestCard from './card';
 import { retrieveTests } from '../../Hawkhacks-2024/src/api/tests';
 import Navbar from './navbar';
 import { useEffect, useState } from 'react';
@@ -19,66 +19,50 @@ const DashboardPage = () => {
     });
   }, []);
 
-    
+  return (
+    <div>
+      <Typography
+        variant="h1"
+        fontSize={100}
+        color="#72C4FF"
+        sx={{
+          marginLeft: 28,
+          marginTop: 5,
+        }}
+      >
+        {' '}
+        My Tests
+      </Typography>
+      <Typography
+        variant="h2"
+        fontSize={100}
+        color="#0067B1"
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          marginTop: -15,
+          marginRight: 10,
+        }}
+      >
+        Other Tests
+      </Typography>
 
-    return (
-        <div>
-            <Typography
-                variant="h1"
-                fontSize = {100}
-                color = "#72C4FF"
-                sx = {{
-                    marginLeft: 28,
-                    marginTop: 5,
-                }}
-            > My Tests</Typography>
-            <Typography
-                variant="h2"
-                fontSize = {100}
-                color = "#0067B1"
-                sx = {{
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    marginTop: -15,
-                    marginRight: 10,
-                }}
-            >Other Tests</Typography>
-
-            
-
-            <Grid
-                sx = {{
-                    marginTop: 3,
-                    marginLeft: 5,
-                }}
-                container rowSpacing = {5}
-                columnSpacing= {-95}
-                onLoad = {() => retrieveTests(1)}>
-                <Grid>
-                {tests.map((test, index) => (
-                    <TestCard test={test} key={index} />
-                ))} </Grid>
-            </Grid>
-
-            <Grid
-                
-                xs={6}
-                sx = {{
-                    marginTop: -23,
-                    marginRight: 49,
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-
-                }} 
-                onLoad = {() => retrieveTests(2)}> 
-                <Grid xs={6}>
-                {tests.map((test, index) => (
-                    <TestCard test={test} key={index} />
-                ))}
-                </Grid>
-
-            </Grid>
-
+      <Grid
+        sx={{
+          marginTop: 3,
+          marginLeft: 5,
+        }}
+        container
+        rowSpacing={5}
+        columnSpacing={-95}
+        onLoad={() => retrieveTests(1)}
+      >
+        <Grid>
+          {tests.map((test, index) => (
+            <TestCard test={test} key={index} />
+          ))}{' '}
+        </Grid>
+      </Grid>
     </div>
   );
 };

@@ -39,7 +39,7 @@ class Course(db.Model):
 class Unit(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(20))
-    summary: Mapped[str] = mapped_column(String(1000))
+    summary: Mapped[str] = mapped_column(String(10000))
     courseId: Mapped[int] = mapped_column(ForeignKey("course.id"))
     authorId: Mapped[int] = mapped_column(ForeignKey("user.id"))
 
@@ -125,7 +125,10 @@ def createCourse():
     newCourse = Course(name=reqArgs['name'], code=reqArgs['code'], desc=reqArgs['desc'], university=reqArgs['university'])
     db.session.add(newCourse)
     db.session.commit()
-    return Response("{'status': 200, 'message': 'course created'}", 200, mimetype='application/json')
+    returnPayload = dict()
+    returnPayload['status'] = 200
+    returnPayload['id'] = newCourse.id
+    return Response(json.dumps(returnPayload), 200, mimetype='application/json')
 
 @app.route("/mockPopulateTables")
 def mockPopulateTables():
@@ -250,15 +253,15 @@ def tests():
         reqArgs = request.get_json() #should contain the title, courseid, authorid, unit to use [].
         unitSummaries = db.session.execute(db.select(Unit.summary).where(Unit.courseId == int(reqArgs['courseId']))).fetchall()
 
-        if(os.environ['USE_AI'] == 1):
+        if(os.environ['USE_AI'] == "1"):
             manager = ChatCompletionManager.ChatCompletionManager()
-            
+            testResponse = []
             for summary in unitSummaries:
-                openaiResponse = manager.questionsWithHistory(summary)
-                testResponse = openaiResponse.choices[0].message.content
+                print(summary)
+                openaiResponse = manager.questionsWithHistory(summary.summary)
+                testResponse += manager.responseToJson(openaiResponse.choices[0].message.content)
                 
-                print("AI Response: ", testResponse)
-            pass
+            print("AI Response: ", testResponse)
         else:
             testResponse = getAIMockResponse()
             pass

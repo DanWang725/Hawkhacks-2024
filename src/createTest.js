@@ -1,6 +1,7 @@
 import { TextField, Box, Button } from '@mui/material';
 import { useState, useRef } from 'react';
 import UnitField from './unitField';
+import { completePostTestProcess } from './api/tests';
 
 const CreateTest = () => {
   const [numUnits, setNumUnits] = useState(1);
@@ -25,10 +26,11 @@ const CreateTest = () => {
       university,
       courseCode,
       courseName,
-      unitNames: Object.values(unitTitles.current),
+      unitName: Object.values(unitTitles.current),
       unitContent: Object.values(unitTexts.current),
     };
     console.log(data);
+    completePostTestProcess(data).then((res) => console.log(res));
   };
 
   return (

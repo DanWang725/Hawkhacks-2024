@@ -19,13 +19,13 @@ const completePostTestProcess = async ({
     if (respCourse.status !== 200) {
       return { status: 400, ...respCourse };
     }
-    unitName.map((unit, index) =>
-      postUnit(unit, unitContent[index], 1, respCourse.data.id),
-    );
+    console.log('stage1', unitName, unitContent, respCourse);
+    for (let i = 0; i < unitName.length; i++) {
+      await postUnit(unitName[i], unitContent[i], 1, respCourse.data.id);
+    }
 
-    Promise.all(unitName).then(() => {
-      postTest(testName, 1, respCourse.data.id);
-    });
+    console.log('stage2');
+    await postTest(testName, 1, respCourse.data.id);
   } catch (error) {
     return { status: 400, ...error };
   }
@@ -48,10 +48,10 @@ const postTest = async (name, userId, courseId) => {
       courseId,
       id: userId,
     };
-    const { data } = await Axios.ost('/tests', dataPayload);
+    const { data } = await Axios.post('/tests', dataPayload);
     return { status: 200, data };
   } catch (error) {
-    return { status: 200, ...error };
+    return { status: 400, ...error };
   }
 };
 
