@@ -14,7 +14,7 @@ const CreateTest = () => {
       <Box
         component="form"
         sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' },
+          '& .MuiTextField-root': { m: 1, width: '22ch' },
           width: '100%',
           marginBottom: '10rem',
         }}
@@ -25,21 +25,23 @@ const CreateTest = () => {
           <h1 className="text-4xl font-bold text-center">Create Test</h1>
 
           <div className="w-fit mx-auto mt-6 mb-4">
-            <TextField
-              required
-              id="testName"
-              label="Test Name"
-              variant="standard"
-            />
+            <Box sx={{ '& .MuiTextField-root': { m: 1, width: '40ch' } }}>
+              <TextField
+                required
+                id="testName"
+                label="Test Name"
+                variant="standard"
+              />
+            </Box>
+          </div>
+
+          <div className="w-fit mx-auto mt-4 mb-10">
             <TextField
               required
               id="university"
               label="University"
               variant="standard"
             />
-          </div>
-
-          <div className="w-fit mx-auto mt-4 mb-8">
             <TextField
               required
               id="courseCode"
