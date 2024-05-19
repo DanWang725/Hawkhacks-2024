@@ -4,7 +4,7 @@ const postUnit = async (unitName, noteContent, userId, courseId) => {
   const dataPayload = {
     content: noteContent,
     id: userId,
-    courseId,
+    courseId: courseId,
     name: unitName,
   };
   try {
