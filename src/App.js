@@ -4,8 +4,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import TestCard from './card.js';
 import { Button, Stack } from '@mui/material';
 import { retrieveTests } from '../../Hawkhacks-2024/src/api/tests';
-import  DashboardPage  from './DashboardPage.js';
-
+import DashboardPage from './DashboardPage.js';
+import Navbar from './navbar.js';
 
 const theme = createTheme({
   palette: {
@@ -18,6 +18,8 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
+        <Navbar />
+
         <Routes>
           <Route path="/">
             <Route index element={<CreateTest />} />
@@ -27,8 +29,6 @@ const App = () => {
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
-
-    
   );
 };
 

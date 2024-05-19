@@ -1,18 +1,44 @@
 import { TextField, Box, Button } from '@mui/material';
-import Navbar from './navbar';
 import { useState, useRef } from 'react';
 import UnitField from './unitField';
 
 const CreateTest = () => {
   const [numUnits, setNumUnits] = useState(1);
+  const [testName, setTestName] = useState('');
+  const [university, setUniversity] = useState('');
+  const [courseCode, setCourseCode] = useState('');
+  const [courseName, setCourseName] = useState('');
   const unitTitles = useRef({ 0: '' });
   const unitTexts = useRef({ 0: '' });
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('submitted');
+    console.log(testName);
+    console.log(university);
+    console.log(courseCode);
+    console.log(courseName);
+    console.log(unitTitles.current);
+    console.log(unitTexts.current);
+    const data = {
+      testName,
+      university,
+      courseCode,
+      courseName,
+      unitNames: Object.values(unitTitles.current),
+      unitContent: Object.values(unitTexts.current),
+    };
+    console.log(data);
+  };
+
   return (
     <>
-      <Navbar />
       <Box
         component="form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          console.log(e);
+        }}
         sx={{
           '& .MuiTextField-root': { m: 1, width: '25ch' },
           width: '100%',
@@ -30,11 +56,13 @@ const CreateTest = () => {
               id="testName"
               label="Test Name"
               variant="standard"
+              onChange={(e) => setTestName(e.target.value)}
             />
             <TextField
               required
               id="university"
               label="University"
+              onChange={(e) => setUniversity(e.target.value)}
               variant="standard"
             />
           </div>
@@ -44,9 +72,15 @@ const CreateTest = () => {
               required
               id="courseCode"
               label="Course Code"
+              onChange={(e) => setCourseCode(e.target.value)}
               variant="standard"
             />
-            <TextField id="courseName" label="Course Name" variant="standard" />
+            <TextField
+              id="courseName"
+              label="Course Name"
+              variant="standard"
+              onChange={(e) => setCourseName(e.target.value)}
+            />
           </div>
 
           {[...Array(numUnits).keys()].map((id, index) => (
@@ -54,12 +88,12 @@ const CreateTest = () => {
               key={id}
               index={index}
               onTitleChange={(index, value) => {
-                const newUnitTitles = { ...unitTitles };
+                const newUnitTitles = { ...unitTitles.current };
                 newUnitTitles[index] = value;
                 unitTitles.current = newUnitTitles;
               }}
               onTextChange={(index, value) => {
-                const newUnitTexts = { ...unitTexts };
+                const newUnitTexts = { ...unitTexts.current };
                 newUnitTexts[index] = value;
                 unitTexts.current = newUnitTexts;
               }}
@@ -81,6 +115,9 @@ const CreateTest = () => {
 
             <div className="mr-[8px] ml-auto w-fit">
               <Button
+                onClick={(e) => {
+                  handleSubmit(e);
+                }}
                 type="submit"
                 variant="contained"
                 color="primary"
