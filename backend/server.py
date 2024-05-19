@@ -30,9 +30,9 @@ class User(db.Model):
 
 class Course(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    name: Mapped[Optional[str]] = mapped_column(String(30), unique=True)
+    name: Mapped[str] = mapped_column(String(30), unique=True)
     code: Mapped[str] = mapped_column(String(10))
-    desc: Mapped[str] = mapped_column(String(255))
+    desc: Mapped[Optional[str]] = mapped_column(String(255))
     university: Mapped[str] = mapped_column(String(40))
     
 
@@ -167,21 +167,6 @@ def mockTestResults():
     db.session.add(mockAnswerToQuestion3)
     db.session.commit()
     return "Test results populated"
-
-
-
-@app.route("/createTest", methods=["POST"])
-def createTest():
-    reqArgs = request.get_json()
-    isCourseExists = db.session.execute(db.select(Course.id).where(Course.id == reqArgs['courseId'])).first()
-    if(isCourseExists == None):
-        return Response("{'status': 400, 'message': 'course does not exist'}", 400, mimetype='application/json')
-    
-    newTest = Test(dateCreated=datetime.datetime.now(), name=reqArgs['name'], desc=reqArgs['desc'], courseId=reqArgs['courseId'], authorId=reqArgs['id'])
-    db.session.add(newTest)
-    db.session.commit()
-    return Response("{'status': 200, 'message': 'test created'}", 200, mimetype='application/json')
-
 
 @app.route("/getTest", methods=["GET"])
 def getTest():
