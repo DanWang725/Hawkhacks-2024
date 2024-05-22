@@ -2,8 +2,10 @@ import { TextField, Box, Button } from '@mui/material';
 import { useState, useRef } from 'react';
 import UnitField from './unitField';
 import { completePostTestProcess } from './api/tests';
+import { useNavigate } from 'react-router-dom';
 
 const CreateTest = () => {
+  const navigate = useNavigate();
   const [numUnits, setNumUnits] = useState(1);
   const [testName, setTestName] = useState('');
   const [university, setUniversity] = useState('');
@@ -32,7 +34,11 @@ const CreateTest = () => {
       unitContent: Object.values(unitTexts.current),
     };
     console.log(data);
-    completePostTestProcess(data).then((res) => setIsSubmitting(false));
+    completePostTestProcess(data).then((res) => {
+      console.log(res);
+      setIsSubmitting(false);
+      navigate(`/test/${res.data.id}`);
+    });
   };
 
   return (

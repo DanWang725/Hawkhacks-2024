@@ -276,7 +276,10 @@ def tests():
             db.session.add(newQuestion)
         
         db.session.commit()
-        return Response("{'status': 200, 'message': 'test created'}", 200, mimetype='application/json')
+        requestPayload = dict()
+        requestPayload['status'] = 200
+        requestPayload['id'] = newTest.id
+        return Response(json.dumps(requestPayload), 200, mimetype='application/json')
         # print(newTest.id)
   
 @app.route('/testResults', methods=["POST"])
