@@ -51,7 +51,7 @@ const CreateTest = () => {
         noValidate
         autoComplete="off"
       >
-        <div className="w-[45rem] mx-auto my-16">
+        <div className="w-[45rem] mx-auto mb-16 mt-32">
           <h1 className="text-4xl font-bold text-center">Create Test</h1>
 
           <div className="w-fit mx-auto mt-6 mb-4">
