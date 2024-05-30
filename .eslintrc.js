@@ -50,4 +50,5 @@ module.exports = {
       },
     ],
   },
+  ignorePatterns: ['tailwind.config.js'],
 };

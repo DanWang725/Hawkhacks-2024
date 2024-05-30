@@ -1,117 +1,113 @@
-import {
-    Typography,
-    Button,
-} from '@mui/material';
-
-
+import FeatureCard from '../components/FeatureCard.js';
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
-    return (
-        <div>
-            <Typography
-                variant="body1"
-                fontSize = {100}
-                color = "#000000"
-                sx = {{
-                    textAlign: 'center',
-                    marginTop: 25,
-                    fontWeight: 100,
-                }}
-            > Here to Help <font color='#72C4FF'>YOU</font> Study</Typography>
+  const navigate = useNavigate();
 
-
-            <Typography
-                variant="body1"
-                fontSize = {40}
-                color = "#E9E2E2"
-                sx = {{
-                    textAlign: 'center',
-                    fontWeight: 50,
-                    position: 'absolute',
-                    top : 100,
-                    left : 50,
+  return (
+    <div className="w-full flex overflow-auto min-h-screen items-center flex-col font-[Urbanist]">
+      <div className="w-full py-48 bg-[#fffcf3]">
+        <div className="w-full flex items-center justify-center flex-col">
+          <div className="flex items-center flex-col justify-start">
+            <h1 className="pb-10 text-[#1e2a69] text-center text-6xl font-bold">
+              Turn Your Notes into Quizzes
+            </h1>
+            <div className="gap-8 flex items-center flex-row">
+              <Button
+                variant="contained"
+                color="tertiary"
+                sx={{ color: 'white' }}
+                className="buttonFilled white"
+                onClick={() => {
+                  navigate('/create');
                 }}
-            > {'Micro Computers'}</Typography>
-
-            <Typography
-                variant="body1"
-                fontSize = {40}
-                color = "#E9E2E2"
-                sx = {{
-                    textAlign: 'center',
-                    fontWeight: 50,
-                    position: 'absolute',
-                    top : 480,
-                    left : 140,
-                }}
-            > {'BioMedical'}</Typography>
-
-            <Typography
-                variant="body1"
-                fontSize = {40}
-                color = "#E9E2E2"
-                sx = {{
-                    textAlign: 'center',
-                    fontWeight: 50,
-                    position: 'absolute',
-                    top : 210,
-                    left : 370,
-                }}
-            > {'Nutrition'}</Typography>
-
-            <Typography
-                variant="body1"
-                fontSize = {40}
-                color = "#E9E2E2"
-                sx = {{
-                    textAlign: 'center',
-                    fontWeight: 50,
-                    position: 'absolute',
-                    top : 600,
-                    left : 540,
-                }}
-            > {'Discrete Math'}</Typography>
-
-            <Typography
-                variant="body1"
-                fontSize = {40}
-                color = "#E9E2E2"
-                sx = {{
-                    textAlign: 'center',
-                    fontWeight: 50,
-                    position: 'absolute',
-                    top : 80,
-                    left : 1000,
-                }}
-            > {'Sociology'}</Typography>
-
-            <Typography
-                variant="body1"
-                fontSize = {40}
-                color = "#E9E2E2"
-                sx = {{
-                    textAlign: 'center',
-                    fontWeight: 50,
-                    position: 'absolute',
-                    top : 530,
-                    left : 940,
-                }}
-            > {'Computer Science'}</Typography>
-
-            <Typography
-                variant="body1"
-                fontSize = {40}
-                color = "#E9E2E2"
-                sx = {{
-                    textAlign: 'center',
-                    fontWeight: 500,
-                    position: 'absolute',
-                    top : 180,
-                    left : 1200,
-                }}
-            > {'Geography'}</Typography>
+              >
+                Get Started
+              </Button>
+              <Button color="tertiary" variant="text">
+                Learn More →
+              </Button>
+            </div>
+          </div>
         </div>
-    )
-}
+      </div>
+      <div className="w-full flex items-center justify-center bg-secondary">
+        <div className="w-full flex text-[#1e2a69] items-center flex-col justify-center">
+          <div className="gap-16 flex items-center py-16 px-12 flex-col justify-start">
+            <div className="flex items-center flex-col justify-start">
+              <p className="text-l uppercase pb-4">features</p>
+              <h2 className="mb-8 text-4xl font-semibold text-center">
+                Features to Enhance Your Study Experience
+              </h2>
+              <p className="text-l text-center font-medium">
+                Explore the functionalities that make studying efficient and
+                effective
+              </p>
+            </div>
+            <div className="w-full grid md:grid-cols-2 grid-cols-1 gap-8 flex">
+              <FeatureCard
+                heading="Automatic Quiz Generation"
+                subHeading="Turn your notes into a customized practice quiz instantly"
+              ></FeatureCard>
+              <FeatureCard
+                heading="Adaptive Learning"
+                subHeading="Receive questions based on your study progress and performance"
+              ></FeatureCard>
+              <FeatureCard
+                heading="Multiple Question Types"
+                subHeading="Practice with various question formats like multiple choice, true/false, and more"
+              ></FeatureCard>
+              <FeatureCard
+                heading="Detailed Feedback"
+                subHeading="Get immediate feedback on your answers to track your learning"
+              ></FeatureCard>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="flex w-full items-center justify-center">
+        <div className="bg-[#fffcf3] text-[#1e2a69] w-full flex items-center py-20 px-14 flex-col">
+          <h1 className="mb-8 text-4xl font-semibold text-center">
+            Effortless Quiz Creation
+          </h1>
+          <p className="text-l text-center mb-8">
+            Transform your notes into interactive quizzes that help you retain
+            information better. Our platform makes studying fun and effective.
+          </p>
+          <Button
+            variant="contained"
+            color="tertiary"
+            sx={{ color: 'white' }}
+            className="buttonFilled white"
+          >
+            Learn More
+          </Button>
+        </div>
+      </div>
+      <div className="w-full flex items-center justify-center text-[#1e2a69] bg-[#fffcf3]">
+        <footer className="w-full justify-between py-6 px-10 flex-col flex">
+          <div className="gap-6 flex items-center flex-col justify-start">
+            <p className="text-4xl font-semibold text-center">Study Buddy</p>
+            {/* Change name to Quizify? */}
+            <div className="flex items-center flex-row">
+              <p className="mx-3">Home</p>
+              <p className="mx-3">How It Works</p>
+              <p className="mx-3">Features</p>
+              <p className="mx-3">FAQ</p>
+              <p className="mx-3">Contact</p>
+            </div>
+          </div>
+          <div className="w-full h-0 flex my-6 items-start border-[#d9d9d9] border-solid border-2" />
+          <div className="w-full flex items-center justify-between md:flex-row lg:flex-row flex-col">
+            <p className="bodySmall home-text89">
+              © 2024 Study Buddy, All Rights Reserved.
+            </p>
+          </div>
+        </footer>
+      </div>
+    </div>
+  );
+};
 
 export default HomePage;

@@ -2,7 +2,7 @@ import { box, Typography, Button, Card, Grid } from '@mui/material';
 
 import TestCard from './card';
 import { retrieveTests } from '../../Hawkhacks-2024/src/api/tests';
-import Navbar from './navbar';
+import Navbar from './Navbar';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
