@@ -54,13 +54,13 @@ class Test(db.Model):
 class TestQuestion(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     testId: Mapped[int] = mapped_column(ForeignKey("test.id"))
-    question: Mapped[str] = mapped_column(String(200))
-    opt1: Mapped[str] = mapped_column(String(200))
-    opt2: Mapped[str] = mapped_column(String(200))
-    opt3: Mapped[str] = mapped_column(String(200))
-    opt4: Mapped[str] = mapped_column(String(200))
+    question: Mapped[str] = mapped_column(String(1000))
+    opt1: Mapped[str] = mapped_column(String(1000))
+    opt2: Mapped[str] = mapped_column(String(1000))
+    opt3: Mapped[str] = mapped_column(String(1000))
+    opt4: Mapped[str] = mapped_column(String(1000))
     answer: Mapped[int] = mapped_column(Integer())
-    justification: Mapped[str] = mapped_column(String(200))
+    justification: Mapped[str] = mapped_column(String(1000))
 
 class UserQuestionAnswer(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)

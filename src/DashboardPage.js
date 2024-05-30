@@ -4,10 +4,11 @@ import TestCard from './card';
 import { retrieveTests } from '../../Hawkhacks-2024/src/api/tests';
 import Navbar from './navbar';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const DashboardPage = () => {
   const [tests, setTests] = useState([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     retrieveTests(1).then(({ data }) => {
       const parsedTests = data.tests?.map((test) => {
@@ -59,7 +60,11 @@ const DashboardPage = () => {
       >
         <Grid>
           {tests.map((test, index) => (
-            <TestCard test={test} key={index} />
+            <TestCard
+              test={test}
+              key={index}
+              openTestFunc={() => navigate(`/test/${index + 1}`)}
+            />
           ))}{' '}
         </Grid>
       </Grid>
