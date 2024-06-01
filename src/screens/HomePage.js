@@ -7,10 +7,10 @@ const HomePage = () => {
 
   return (
     <div className="w-full flex overflow-auto min-h-screen items-center flex-col font-[Urbanist]">
-      <div className="w-full py-48 bg-[#fffcf3]">
+      <div className="w-full py-72">
         <div className="w-full flex items-center justify-center flex-col">
           <div className="flex items-center flex-col justify-start">
-            <h1 className="pb-10 text-[#1e2a69] text-center text-6xl font-bold">
+            <h1 className="pb-10 text-primary text-center text-6xl font-bold">
               Turn Your Notes into Quizzes
             </h1>
             <div className="gap-8 flex items-center flex-row">
@@ -33,7 +33,7 @@ const HomePage = () => {
         </div>
       </div>
       <div className="w-full flex items-center justify-center bg-secondary">
-        <div className="w-full flex text-[#1e2a69] items-center flex-col justify-center">
+        <div className="w-full flex text-primary items-center flex-col justify-center">
           <div className="gap-16 flex items-center py-16 px-12 flex-col justify-start">
             <div className="flex items-center flex-col justify-start">
               <p className="text-l uppercase pb-4">features</p>
@@ -67,7 +67,7 @@ const HomePage = () => {
         </div>
       </div>
       <div className="flex w-full items-center justify-center">
-        <div className="bg-[#fffcf3] text-[#1e2a69] w-full flex items-center py-20 px-14 flex-col">
+        <div className="text-primary w-full flex items-center py-20 px-14 flex-col">
           <h1 className="mb-8 text-4xl font-semibold text-center">
             Effortless Quiz Creation
           </h1>
@@ -85,7 +85,7 @@ const HomePage = () => {
           </Button>
         </div>
       </div>
-      <div className="w-full flex items-center justify-center text-[#1e2a69] bg-[#fffcf3]">
+      <div className="w-full flex items-center justify-center text-primary">
         <footer className="w-full justify-between py-6 px-10 flex-col flex">
           <div className="gap-6 flex items-center flex-col justify-start">
             <p className="text-4xl font-semibold text-center">Study Buddy</p>

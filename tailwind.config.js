@@ -8,7 +8,12 @@ module.exports = {
       secondary: '#A7BEF2',
       tertiary: '#1E2A69',
     }),
-    extend: {},
+    extend: {
+      textColor: {
+        primary: '#1E2A69',
+        secondary: '#FFAD72',
+      },
+    },
   },
   plugins: [],
 };

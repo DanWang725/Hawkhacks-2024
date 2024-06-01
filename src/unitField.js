@@ -11,6 +11,8 @@ const UnitField = ({
   const [titleValue, setTitleValue] = useState('');
   const [textValue, setTextValue] = useState('');
 
+  const CHARACTER_LIMIT = 10000;
+
   return (
     <div className={'mt-8' + className}>
       <TextField
@@ -37,14 +39,22 @@ const UnitField = ({
         placeholder="Your Notes Here..."
         minRows={10}
         maxRows={30}
+        inputProps={{
+          maxlength: CHARACTER_LIMIT,
+        }}
         value={textValue}
         onChange={(e) => {
           var str = e.target.value;
-          if (e.target.value.length > 10000) str = str.substring(0, 9999);
+          if (e.target.value.length > CHARACTER_LIMIT)
+            str = str.substring(0, CHARACTER_LIMIT - 1);
           setTextValue(str);
           onTextChange(index, str);
         }}
       />
+
+      <div className="flex justify-end text-sm text-gray-400 px-3 mt-[-4px]">
+        <p>{`${textValue.length}/${CHARACTER_LIMIT}`}</p>
+      </div>
     </div>
   );
 };
