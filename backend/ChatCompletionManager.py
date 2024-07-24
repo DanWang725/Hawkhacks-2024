@@ -45,9 +45,9 @@ For example, you are forbidden from asking questions that have options that have
 
 class ChatCompletionManager:
     
-    # use gpt-3.5-turbo for testing because $$$
-    # use gpt-4o for production
-    model = "gpt-3.5-turbo"
+    # use gpt-4o-mini for everything
+    # only gpt-4o once we actually can afford it
+    model = "gpt-4o-mini"
     chatHistory = []
     
     def __init__(self):
