@@ -17,13 +17,6 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
-Setup docker container for MySQL server
-
-```bash
-docker run --name my-database -p 3307:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql:8.0
-
-```
-
 ## Running Dev Servers
 
 ### Frontend

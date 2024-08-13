@@ -8,14 +8,16 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Integer, String, ForeignKey
 from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column
-from flask_sqlalchemy import SQLAlchemy
 from utils import getAIMockResponse
 import ChatCompletionManager;
 
 load_dotenv()
 app = Flask(__name__)
 CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://{}:{}@{}/{}".format(os.getenv('MYSQL_USER'), os.getenv('MYSQL_PASSWORD'),  os.getenv('MYSQL_HOST'), os.getenv('MYSQL_DB'))
+db_url = os.getenv('DATABASE_URL')
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://{}:{}@{}/{}".format(os.getenv('MYSQL_USER'), os.getenv('MYSQL_PASSWORD'),  os.getenv('MYSQL_HOST'), os.getenv('MYSQL_DB'))
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 db = SQLAlchemy(app)
 
 # class University(db.Model):
@@ -34,7 +36,6 @@ class Course(db.Model):
     code: Mapped[str] = mapped_column(String(10))
     desc: Mapped[Optional[str]] = mapped_column(String(255))
     university: Mapped[str] = mapped_column(String(40))
-    
 
 class Unit(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -73,12 +74,13 @@ with app.app_context() as ctx:
     ctx.push()
     db.create_all()
 
+
 @app.route("/login", methods=['POST'])
 def login():
     reqArgs = request.get_json()
-    getUser = db.session.execute(db.select(User.id).where(User.name == reqArgs['name']).where(User.password == reqArgs['password'])).first();
+    getUser = db.session.execute(db.select(User.id).where(User.name == reqArgs['name']).where(User.password == reqArgs['password'])).first()
     if(len(getUser) == 0):
-        return Response("{'status': 400, 'message': 'user not found'}", 200, mimetype='application/json')
+        return Response("{'status': 400, 'message': 'user not found'}", 400, mimetype='application/json')
     
     # userId = getUser.first()
     print(str(getUser[0]));
@@ -87,17 +89,20 @@ def login():
     responseObj['id'] = getUser[0]
     return Response(json.dumps(responseObj), 200, mimetype='application/json')
 
+
 @app.route("/createAccount", methods=['POST'])
 def createAcc():
     reqArgs = request.get_json()
-    existingUser = db.session.execute(db.select(User).where(User.name == reqArgs['name'])).scalars();
+    # NOTE: The name column is not unique, but we are checking for uniqueness of name and email
+    existingUser = db.session.execute(db.select(User).where(User.name == reqArgs['name'] or User.email == reqArgs['email'])).scalars()
     if(len(existingUser.fetchall()) != 0):
         return Response("{'message': 'User already exists'}", 400, mimetype='application/json')
     
     newUser = User(name=reqArgs['name'], email=reqArgs['email'], password=reqArgs['password'])
-    db.session.add(newUser);
-    db.session.commit();
-    return reqArgs
+    db.session.add(newUser)
+    db.session.commit()
+    return Response("{'status': 200, 'message': 'user created'}", 200, mimetype='application/json')
+
 
 @app.route("/unit", methods=['POST'])
 def createUnit():
@@ -121,6 +126,7 @@ def createUnit():
     db.session.commit()
     return Response("{'status': 200, 'message': 'unit created'}", 200, mimetype='application/json')
 
+
 @app.route("/course", methods=['POST'])
 def createCourse():
     reqArgs = request.get_json()
@@ -131,6 +137,7 @@ def createCourse():
     returnPayload['status'] = 200
     returnPayload['id'] = newCourse.id
     return Response(json.dumps(returnPayload), 200, mimetype='application/json')
+
 
 @app.route("/mockPopulateTables")
 def mockPopulateTables():
@@ -162,6 +169,7 @@ def mockPopulateTables():
     db.session.commit()
     return "Tables populated"
 
+
 @app.route("/mockTestResults", methods=["GET"])
 def mockTestResults():
     mockAnswerToQuestion1 = UserQuestionAnswer(answer=2, isCorrect=True, questionId=1, ownerId=1)
@@ -172,6 +180,7 @@ def mockTestResults():
     db.session.add(mockAnswerToQuestion3)
     db.session.commit()
     return "Test results populated"
+
 
 @app.route("/getTest", methods=["GET"])
 def getTest():
@@ -201,6 +210,7 @@ def getTest():
     responsePayload['questions'] = questionList
     payload = json.dumps(responsePayload)
     return Response(payload, 200, mimetype='application/json')
+
 
 @app.route('/tests', methods=["GET", "POST"])
 def tests():
@@ -281,7 +291,8 @@ def tests():
         requestPayload['id'] = newTest.id
         return Response(json.dumps(requestPayload), 200, mimetype='application/json')
         # print(newTest.id)
-  
+
+
 @app.route('/testResults', methods=["POST"])
 def testResults():
     if(request.method == "POST"):
