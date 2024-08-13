@@ -264,24 +264,24 @@ def tests():
     elif (request.method == "POST"):
         reqArgs = request.get_json() #should contain the title, courseid, authorid, unit to use [].
         unitSummaries = db.session.execute(db.select(Unit.summary).where(Unit.courseId == int(reqArgs['courseId']))).fetchall()
-
+        
+        quizResponse = None
         if(os.environ['USE_AI'] == "1"):
-            manager = ChatCompletionManager.ChatCompletionManager()
-            testResponse = []
+            manager = ChatCompletionManager.Manager()
             for summary in unitSummaries:
                 print(summary)
                 openaiResponse = manager.questionsWithHistory(summary.summary)
-                testResponse += manager.responseToJson(openaiResponse.choices[0].message.content)
+                quizResponse = openaiResponse.choices[0].message.parsed
                 
-            print("AI Response: ", testResponse)
+            print("AI Response: ", quizResponse)
         else:
-            testResponse = getAIMockResponse()
+            quizResponse = getAIMockResponse()
             pass
 
         newTest = Test(dateCreated=datetime.datetime.now(), name=reqArgs['name'], desc="description", courseId=reqArgs['courseId'], authorId=reqArgs['id'])
         db.session.add(newTest)
         db.session.commit()
-        for question in testResponse:
+        for question in quizResponse['questions']:
             newQuestion = TestQuestion(testId=newTest.id, question=question['question'], opt1=question['options'][0], opt2=question['options'][1], opt3=question['options'][2], opt4=question['options'][3], answer=question['answer'], justification=question['explanation'])
             db.session.add(newQuestion)
         

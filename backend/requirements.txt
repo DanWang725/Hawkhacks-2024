@@ -6,3 +6,4 @@ flask-cors
 flask_mysqldb
 flask_sqlalchemy
 psycopg2-binary
+pydantic
