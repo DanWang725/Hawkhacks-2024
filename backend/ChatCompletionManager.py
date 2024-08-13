@@ -1,24 +1,34 @@
 from openai import OpenAI
 from dotenv import load_dotenv
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, RootModel
 from typing import List, Union
 
 
 class MultiChoiceQuestionSchema(BaseModel):
-    # type: str = Field("multiple_choice", const=True)
+    # type: str = Field("multiple_choice", Literal=True)
     question: str
     options: List[str] = Field(..., min_items=4, max_items=4)
     answer: int = Field(..., ge=0, le=3) # int from 0 to 3
     explaination: str
 
+class SelectAllAnswerIndex(BaseModel):
+    index: int = Field(..., ge=0)
+
 class SelectAllQuestionSchema(BaseModel):
-    type: str = Field("select_all", const=True)
+    type: str = Field("select_all", Literal=True)
     question: str
     options: List[str] = Field(..., min_items=2, max_items=5)  # Minimum of 2 options for select all
-    answers: List[int] = Field(..., ge=0)  # List of indices for correct options
+    answers: List[SelectAllAnswerIndex]
+    explaination: str
 
-class QuestionSchema(BaseModel):
-    __root__: Union[MultiChoiceQuestionSchema, SelectAllQuestionSchema]
+class TrueFalseQuestionSchema(BaseModel):
+    type: str = Field("true_false", Literal=True)
+    question: str
+    answer: bool
+    explaination: str
+
+class QuestionSchema(RootModel[Union[MultiChoiceQuestionSchema, SelectAllQuestionSchema, TrueFalseQuestionSchema]]):
+    pass
 
 class QuizSchema(BaseModel):
     # TODO: Change this to QuestionSchema to accept multiple types of questions
