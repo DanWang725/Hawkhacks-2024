@@ -29,12 +29,5 @@ yarn start
 
 ```bash
 cd backend
-python -m flask --app server run
-```
-
-or
-
-```bash
-cd backend
-flask --app server run
+uvicorn main:app --reload
 ```

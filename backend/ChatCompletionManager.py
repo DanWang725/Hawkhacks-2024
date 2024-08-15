@@ -1,4 +1,4 @@
-from openai import OpenAI
+from openai import OpenAI, AsyncOpenAI
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field, RootModel
 from typing import List, Union
@@ -7,25 +7,25 @@ from typing import List, Union
 class MultiChoiceQuestionSchema(BaseModel):
     # type: str = Field("multiple_choice", Literal=True)
     question: str
-    options: List[str] = Field(..., min_items=4, max_items=4)
-    answer: int = Field(..., ge=0, le=3) # int from 0 to 3
-    explaination: str
+    options: List[str] #= Field(..., min_items=4, max_items=4)
+    answer: int #= Field(int, ge=0, le=3) # int from 0 to 3
+    explanation: str
 
 class SelectAllAnswerIndex(BaseModel):
-    index: int = Field(..., ge=0)
+    index: int #= Field(int, ge=0)
 
 class SelectAllQuestionSchema(BaseModel):
     type: str = Field("select_all", Literal=True)
     question: str
-    options: List[str] = Field(..., min_items=2, max_items=5)  # Minimum of 2 options for select all
+    options: List[str] #= Field(..., min_items=2, max_items=5)  # Minimum of 2 options for select all
     answers: List[SelectAllAnswerIndex]
-    explaination: str
+    explanation: str
 
 class TrueFalseQuestionSchema(BaseModel):
     type: str = Field("true_false", Literal=True)
     question: str
     answer: bool
-    explaination: str
+    explanation: str
 
 class QuestionSchema(RootModel[Union[MultiChoiceQuestionSchema, SelectAllQuestionSchema, TrueFalseQuestionSchema]]):
     pass
@@ -34,7 +34,10 @@ class QuizSchema(BaseModel):
     # TODO: Change this to QuestionSchema to accept multiple types of questions
     questions: List[MultiChoiceQuestionSchema]
 
+QuizSchema.model_rebuild()
 
+class Response(BaseModel):
+    quiz: QuizSchema
 
 OpenAiInitialSystemMessage = """
 You are going to play the role of a professor writing a test for your students. It will be in the form of a multiple choice test.
@@ -90,14 +93,28 @@ class Manager:
             organization = org if not None else 'org-Wr0OcM4KbkxO8eDGbrgP7XxT',
             project = proj if not None else 'proj_e5BudJi0QmXDFk7zpXdHmPkP'
         )
+        self.asyncClient = AsyncOpenAI(
+            organization = org if not None else 'org-Wr0OcM4KbkxO8eDGbrgP7XxT',
+            project = proj if not None else 'proj_e5BudJi0QmXDFk7zpXdHmPkP'
+        )
         
         self.chatHistory.append({
             "role": "system",
             "content": OpenAiInitialSystemMessage,
         })
+
+
     
+    def clearChatHistory(self):
+        self.chatHistory = []
+        self.chatHistory.append({
+            "role": "system",
+            "content": OpenAiInitialSystemMessage,
+        })
+
+
     
-    def questionsNoHistory(self, notes):
+    async def questionsNoHistory(self, notes):
         if not notes:
             print("Error: Can not create questions without any notes")
             return
@@ -115,11 +132,11 @@ class Manager:
             }
         ]
         
-        print("\nAsking ChatGPT for questions without history...")
-        openai_response = self.client.beta.chat.completions.parse(
+        print("Asking ChatGPT for questions without history...")
+        openai_response = await self.asyncClient.beta.chat.completions.parse(
             model = self.model,
             messages = message,
-            response_format = QuizSchema,
+            response_format = Response,
         )
         
         return openai_response
@@ -147,11 +164,11 @@ class Manager:
         
         # TODO: check if the chat history is not too long
         
-        print("\nAsking ChatGPT for questions with history...")
+        print("Asking ChatGPT for questions with history...")
         openai_response = self.client.beta.chat.completions.parse(
             model=self.model,
             messages=self.chatHistory,
-            response_format = QuizSchema,
+            response_format = Response,
         )
         
         # Add this answer to our chat history
@@ -167,52 +184,52 @@ class Manager:
 
 
 
-example_notes = """
-Arithmetic Operations
-- Addition, Multiplication, Subtraction and Division done on images
-- Addition is a form of averaging, usually used to reduce noise
-- Subtraction is used to reveal differences between those images and is often used in the detection of change
-- Multiplication involves floating point DNs, if one image is Boolean the result is a **masking op**
-- Division (Ratioing) is one of the most common ops, and is used heavily in vegetation indices
+# example_notes = """
+# Arithmetic Operations
+# - Addition, Multiplication, Subtraction and Division done on images
+# - Addition is a form of averaging, usually used to reduce noise
+# - Subtraction is used to reveal differences between those images and is often used in the detection of change
+# - Multiplication involves floating point DNs, if one image is Boolean the result is a **masking op**
+# - Division (Ratioing) is one of the most common ops, and is used heavily in vegetation indices
 
-Vegetation Transformations (Indices)
+# Vegetation Transformations (Indices)
 
-- Vegetation Index (VI) is a “synthetic (not natural) image layer” which is created using existing bands of a multispectral image
-- Provides us information that is unique and cannot be found in any other individual bands
-- It *maximizes sensitivity* to plant biophysical parameters, and it *normalizes* impacts of sun angle, canopy background, topography, soil variations
-    - it enables us to see vegetation much more apparently in the new image layer
-- VI is used to quantify/predict vegetation biomass (weight of plant in a given area), productivity (healthiness), leaf area (coverage), and/or vegetative ground cover
-- VI's are mainly a combination of the red and near-infrared bands, but this is not always the case
+# - Vegetation Index (VI) is a “synthetic (not natural) image layer” which is created using existing bands of a multispectral image
+# - Provides us information that is unique and cannot be found in any other individual bands
+# - It *maximizes sensitivity* to plant biophysical parameters, and it *normalizes* impacts of sun angle, canopy background, topography, soil variations
+#     - it enables us to see vegetation much more apparently in the new image layer
+# - VI is used to quantify/predict vegetation biomass (weight of plant in a given area), productivity (healthiness), leaf area (coverage), and/or vegetative ground cover
+# - VI's are mainly a combination of the red and near-infrared bands, but this is not always the case
 
-Leaf Cell Structure
-- The Near-Infrared (NIR) wavelength reflectance is controlled by the leaf's cell structure
-- The amount of reflectance varies with:
-    - Leaf Age
-    - Health
-    - Species
-- The reflectance is also related to:
-    - leaf thickness and coating
-    - woody tissue
-    - water content
-- Healthy vegetation absorbs blue- and red-light energy to fuel *photosynthesis* and create *chlorophyll*. A plant with more chlorophyll will **reflect more near-infrared energy** than an unhealthy plant.
+# Leaf Cell Structure
+# - The Near-Infrared (NIR) wavelength reflectance is controlled by the leaf's cell structure
+# - The amount of reflectance varies with:
+#     - Leaf Age
+#     - Health
+#     - Species
+# - The reflectance is also related to:
+#     - leaf thickness and coating
+#     - woody tissue
+#     - water content
+# - Healthy vegetation absorbs blue- and red-light energy to fuel *photosynthesis* and create *chlorophyll*. A plant with more chlorophyll will **reflect more near-infrared energy** than an unhealthy plant.
 
-Simple Ratios and NDVI (**Normalized Difference** Vegetation Index)
-- The simple ratio takes advantage of the inverse relationship between the chlorophyll absorption of the red radiant energy and increased reflectance of near-infrared (NIR) energy for healthy plant canopies
-- The NIR/Red ratio helps to produce an greyscale image showing variation in biomass (the amount of vegetative matter) and in LAI (**Leaf Area Index**) as well as the state of health (physiological functioning) of plants (magnitude of value will be greater than 1)
-- NDVI is used for estimating net primary production over varying biome types, monitor patterns of vegetative surface, and assess the length of growing seasons
-- Seasonal and interannual changes can be monitored using the NDVI ratio
-- Removes multiplicative noise (illumination differences, cloud shadow, and topographic variation)
-- The fact that sums and differences of bands are used in the NDVI rather than absolute values may make the NDVI more appropriate for use in studies *where comparisons over time for a single area are involved*
-    - **ratio value is not affected by the absolute pixel values in the NIR and R bands**
-- The NDVI is functionally equivalent to and is a nonlinear transform of the simple ratio
-"""
+# Simple Ratios and NDVI (**Normalized Difference** Vegetation Index)
+# - The simple ratio takes advantage of the inverse relationship between the chlorophyll absorption of the red radiant energy and increased reflectance of near-infrared (NIR) energy for healthy plant canopies
+# - The NIR/Red ratio helps to produce an greyscale image showing variation in biomass (the amount of vegetative matter) and in LAI (**Leaf Area Index**) as well as the state of health (physiological functioning) of plants (magnitude of value will be greater than 1)
+# - NDVI is used for estimating net primary production over varying biome types, monitor patterns of vegetative surface, and assess the length of growing seasons
+# - Seasonal and interannual changes can be monitored using the NDVI ratio
+# - Removes multiplicative noise (illumination differences, cloud shadow, and topographic variation)
+# - The fact that sums and differences of bands are used in the NDVI rather than absolute values may make the NDVI more appropriate for use in studies *where comparisons over time for a single area are involved*
+#     - **ratio value is not affected by the absolute pixel values in the NIR and R bands**
+# - The NDVI is functionally equivalent to and is a nonlinear transform of the simple ratio
+# """
 
 
 if __name__ == "__main__":
     manager = Manager()
     
-    response = manager.questionsNoHistory(example_notes)
-    print("response:\n", response)
-    print(f"\nmessage:\n{response.choices[0].message.content}\n")
-    print("\n\n")
-    manager.questions_with_history(example_notes)
+    # response = manager.questionsNoHistory(example_notes)
+    # print("response:\n", response)
+    # print(f"\nmessage:\n{response.choices[0].message.content}\n")
+    # print("\n\n")
+    # manager.questions_with_history(example_notes)

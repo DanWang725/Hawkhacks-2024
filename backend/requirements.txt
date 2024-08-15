@@ -1,9 +1,10 @@
 openai
 tiktoken
-flask
 python-dotenv
-flask-cors
-flask_mysqldb
-flask_sqlalchemy
-psycopg2-binary
 pydantic
+fastapi[all]
+sqlalchemy
+psycopg2-binary
+alembic
+asyncio
+uvicorn
