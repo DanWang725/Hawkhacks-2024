@@ -6,7 +6,13 @@ abungus alert
 
 ## Getting Started
 
-### Installing Python Libraries
+### Installing Node Modules (Frontend)
+
+```bash
+yarn install
+```
+
+### Installing Python Libraries (Backend)
 
 Run the commands
 
