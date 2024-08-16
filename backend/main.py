@@ -8,6 +8,7 @@ import asyncio
 import ChatCompletionManager
 
 app = FastAPI()
+openAiClient = ChatCompletionManager.Manager()
 
 origins = [
     "http://localhost:3000",  # React development server
@@ -168,9 +169,6 @@ async def create_test_questions(testId: int, db: Session = Depends(database.get_
     units = await crud.get_units_by_test_id(db=db, testId=testId)
     if not units:
         raise HTTPException(status_code=404, detail=f"No units found for test with id {testId}")
-    
-    # for each unit asyncrounously create questions
-    openAiClient = ChatCompletionManager.Manager()
     
     # Create a list of tasks
     tasks = [openAiClient.questionsNoHistory(unit.summary) for unit in units]

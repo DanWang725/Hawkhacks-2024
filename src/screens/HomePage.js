@@ -1,6 +1,13 @@
+import '../styles/global.css';
 import FeatureCard from '../components/FeatureCard.js';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import {
+  QuizPageIcon,
+  MultipleChoiceIcon,
+  DetailedFeedbackIcon,
+} from '../svg/FeatureCardIcons';
+import BrainSvg from '../svg/brain-computer.svg';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -32,7 +39,9 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      <div className="w-full flex items-center justify-center bg-secondary">
+      <div className="w-full flex items-center justify-center animated-gradient-bg">
+        {' '}
+        {/* conic-gradient-bg */}
         <div className="w-full flex text-primary items-center flex-col justify-center">
           <div className="gap-16 flex items-center py-16 px-12 flex-col justify-start">
             <div className="flex items-center flex-col justify-start text-white">
@@ -49,19 +58,31 @@ const HomePage = () => {
               <FeatureCard
                 heading="Automatic Quiz Generation"
                 subHeading="Turn your notes into a customized practice quiz instantly"
-              ></FeatureCard>
+              >
+                <QuizPageIcon />
+              </FeatureCard>
               <FeatureCard
                 heading="Adaptive Learning"
                 subHeading="Receive questions based on your study progress and performance"
-              ></FeatureCard>
+              >
+                <img
+                  src={BrainSvg}
+                  alt="Brain Icon (among us reference)"
+                  className="w-8 h-8 fill-current text-black mr-6 stroke-[4]"
+                />
+              </FeatureCard>
               <FeatureCard
                 heading="Multiple Question Types"
                 subHeading="Practice with various question formats like multiple choice, true/false, and more"
-              ></FeatureCard>
+              >
+                <MultipleChoiceIcon />
+              </FeatureCard>
               <FeatureCard
                 heading="Detailed Feedback"
                 subHeading="Get immediate feedback on your answers to track your learning"
-              ></FeatureCard>
+              >
+                <DetailedFeedbackIcon />
+              </FeatureCard>
             </div>
           </div>
         </div>
