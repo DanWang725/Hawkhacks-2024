@@ -1,9 +1,5 @@
 # Operation: Fiish Downfall
 
-## Hawkhacks-2024
-
-abungus alert
-
 ## Getting Started
 
 ### Installing Node Modules (Frontend)
@@ -23,6 +19,28 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
+## Configuring Environment (.env)
+
+You will need to contact someone with access in order to get some of these environment variables
+
+### Frontend
+
+If you do not have a `.env` in your base directory, create one.
+
+It must contain:
+
+1. `REACT_APP_FASTAPI_URL = http://127.0.0.1:8000`
+
+### Backend
+
+Create file `.env` in `./backend/`.
+
+It must contain:
+
+1. `USE_AI = 1`
+2. `DATABASE_URL = ...`
+3. `OPENAI_API_KEY = ...`
+
 ## Running Dev Servers
 
 ### Frontend
@@ -37,15 +55,3 @@ yarn start
 cd backend
 uvicorn main:app --reload
 ```
-
-## .env
-
-You will need to contact someone with access in order to get some of these environment variables
-
-### Backend
-
-Create file `.env` in `./backend/`.
-
-1. USE_AI = 1
-2. DATABASE_URL = ...
-3. OPENAI_API_KEY = ...
