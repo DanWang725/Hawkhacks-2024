@@ -1,11 +1,4 @@
-import {
-  Box,
-  Card,
-  CardActionArea,
-  CardContent,
-  CardHeader,
-  Typography,
-} from '@mui/material';
+import { Card, CardActionArea, CardContent, CardHeader } from '@mui/material';
 
 import propTypes from 'prop-types';
 import dateFormat from 'dateformat';
@@ -63,19 +56,27 @@ const TestCard = ({ test = {}, openTestFunc }) => {
 
         <CardContent
           sx={{
-            flexGrow: 1,
             display: 'flex',
             flexDirection: 'column',
             margin: 0,
-            paddingLeft: 0,
           }}
         >
-          <Box
+          <div className="w-full">
+            <div className="w-full flex flex-row">
+              <p className="w-full text-primary text-md font-semibold">
+                {'Previous Results: ' + testScore}
+              </p>
+              <p className="w-full text-primary text-md font-semibold text-right">
+                {units + ' Units'}
+              </p>
+            </div>
+            <p className="w-full text-primary text-lg font-bold pt-6">
+              {courseCode}
+            </p>
+          </div>
+          {/* <Box
             sx={{
               width: '100%',
-              margin: 0,
-              paddingRight: 0,
-              paddingLeft: 1,
             }}
           >
             <Typography
@@ -83,26 +84,26 @@ const TestCard = ({ test = {}, openTestFunc }) => {
               fontSize={14}
               color={primaryCardColour}
               sx={{
-                marginTop: -1.6,
+                display: 'flex',
                 marginLeft: 1,
               }}
             >
-              {' '}
               {'Previous Results: ' + testScore}
             </Typography>
 
             <Typography
-              variant="body2"
-              fontSize={30}
+              variant="body1"
+              fontSize={14}
               color={primaryCardColour}
               sx={{
                 display: 'flex',
                 justifyContent: 'flex-end',
-                marginTop: -3.0,
+                marginRight: 1,
               }}
             >
               {units + ' Units'}
             </Typography>
+            
 
             <Typography
               variant="body1"
@@ -117,7 +118,7 @@ const TestCard = ({ test = {}, openTestFunc }) => {
               {' '}
               {courseCode}
             </Typography>
-          </Box>
+          </Box> */}
         </CardContent>
       </CardActionArea>
     </Card>

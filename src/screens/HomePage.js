@@ -17,7 +17,7 @@ const HomePage = () => {
       <div className="w-full h-[100vh] items-center flex">
         <div className="w-full flex items-center justify-center flex-col">
           <div className="flex items-center flex-col justify-start">
-            <h1 className="pb-10 text-primary text-center text-6xl font-bold">
+            <h1 className="pb-10 title-gradient-text text-center text-6xl font-bold">
               Turn Your Notes into Quizzes
             </h1>
             <div className="gap-8 flex items-center flex-row">
@@ -41,11 +41,9 @@ const HomePage = () => {
       </div>
       <div className="w-full flex items-center justify-center animated-gradient-bg">
         {' '}
-        {/* conic-gradient-bg */}
         <div className="w-full flex text-primary items-center flex-col justify-center">
           <div className="gap-16 flex items-center py-16 px-12 flex-col justify-start">
             <div className="flex items-center flex-col justify-start text-white">
-              <p className="text-l uppercase pb-4">features</p>
               <h2 className="mb-8 text-4xl font-semibold text-center">
                 Features to Enhance Your Study Experience
               </h2>
@@ -57,13 +55,13 @@ const HomePage = () => {
             <div className="w-full grid md:grid-cols-2 grid-cols-1 gap-8 flex text-black">
               <FeatureCard
                 heading="Automatic Quiz Generation"
-                subHeading="Turn your notes into a customized practice quiz instantly"
+                subHeading="Turn your notes into a customized practice quiz instantly."
               >
                 <QuizPageIcon />
               </FeatureCard>
               <FeatureCard
                 heading="Adaptive Learning"
-                subHeading="Receive questions based on your study progress and performance"
+                subHeading="Receive questions based on your study progress and performance."
               >
                 <img
                   src={BrainSvg}
@@ -73,13 +71,13 @@ const HomePage = () => {
               </FeatureCard>
               <FeatureCard
                 heading="Multiple Question Types"
-                subHeading="Practice with various question formats like multiple choice, true/false, and more"
+                subHeading="Practice with question formats like multiple choice, true/false, and more!"
               >
                 <MultipleChoiceIcon />
               </FeatureCard>
               <FeatureCard
                 heading="Detailed Feedback"
-                subHeading="Get immediate feedback on your answers to track your learning"
+                subHeading="Get immediate feedback on your answers to improve upon your mistakes."
               >
                 <DetailedFeedbackIcon />
               </FeatureCard>

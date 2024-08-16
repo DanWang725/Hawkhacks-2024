@@ -1,16 +1,16 @@
-import { Avatar, Button } from '@mui/material';
+import { Button } from '@mui/material';
 import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const linkStyle = {
   fontSize: '18px',
   marginLeft: '2rem',
   marginRight: '2rem',
+  fontWeight: 'bold',
 };
 
 const Navbar = () => {
-  const clickProfile = () => {
-    console.log('clicked profile');
-  };
+  const navigate = useNavigate();
 
   return (
     <header className="fixed top-0 flex flex-row h-14 w-full items-center bg-white text-primary border-b-2 px-4 lg:px-6 z-10">
@@ -59,20 +59,29 @@ const Navbar = () => {
       </div>
 
       <nav className="flex gap-4 sm:gap-6">
-        <div className="flex gap-4 sm:gap-6">
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={clickProfile}
-              color="tertiary"
-              style={{ textTransform: 'none' }}
-            >
-              <p className=" text-primary text-[18px] pr-2 align-middle">
-                User Name
-              </p>
-
-              <Avatar>:)</Avatar>
-            </Button>
-          </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outlined"
+            color="tertiary"
+            sx={{ textTransform: 'none' }}
+            className="buttonFilled white"
+            onClick={() => {
+              navigate('/login');
+            }}
+          >
+            Log In
+          </Button>
+          <Button
+            variant="contained"
+            color="tertiary"
+            sx={{ color: 'white', textTransform: 'none' }}
+            className="buttonFilled white"
+            onClick={() => {
+              navigate('/signup');
+            }}
+          >
+            Sign Up
+          </Button>
         </div>
       </nav>
     </header>
