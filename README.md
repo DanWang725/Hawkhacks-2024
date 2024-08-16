@@ -38,8 +38,8 @@ Create file `.env` in `./backend/`.
 It must contain:
 
 1. `USE_AI = 1`
-2. `DATABASE_URL = ...`
-3. `OPENAI_API_KEY = ...`
+2. `DATABASE_URL = ... (Secret)`
+3. `OPENAI_API_KEY = ... (Secret)`
 
 ## Running Dev Servers
 
