@@ -1,9 +1,6 @@
 import CreateTest from './createTest';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import TestCard from './card.js';
-import { Button, Stack } from '@mui/material';
-import { retrieveTests } from '../../Hawkhacks-2024/src/api/tests';
 import DashboardPage from './DashboardPage.js';
 import Navbar from './Navbar.js';
 import QuizPage from './screens/QuizPage.js';

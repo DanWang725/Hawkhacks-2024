@@ -26,14 +26,21 @@ async def create_user(db: Session, name: str, email: str, password: str):
         db.commit()
         db.refresh(user)
         return user
-    except:
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
 
 
 
 ###############
 #   COURSES   #
 ###############
+
+async def get_all_courses(db: Session, max_courses: int = 100):
+    try:
+        courses = db.query(Course).limit(max_courses).all()
+        return courses
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
 
 async def get_course_by_id(db: Session, id: int):
     return db.query(Course).filter(Course.id == id).first()
@@ -42,7 +49,7 @@ async def create_course(db: Session, name: str, code: str, desc: str, university
     # check if the course already exists
     existing_course = db.query(Course).filter(Course.code == code, Course.university == university).first()
     if existing_course:
-        raise HTTPException(status_code=409, detail="Course already exists")
+        return existing_course
     
     try:
         course = Course(name=name, code=code, desc=desc, university=university)
@@ -50,8 +57,8 @@ async def create_course(db: Session, name: str, code: str, desc: str, university
         db.commit()
         db.refresh(course)
         return course
-    except:
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
 
 
 
@@ -59,8 +66,18 @@ async def create_course(db: Session, name: str, code: str, desc: str, university
 #    TESTS    #
 ###############
 
+async def get_all_tests(db: Session, max_tests: int = 100):
+    try:
+        tests = db.query(Test).limit(max_tests).all()
+        return tests
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
+
 async def get_test_by_id(db: Session, id: int):
     return db.query(Test).filter(Test.id == id).first()
+
+async def get_tests_by_user_id(db: Session, userId: int):
+    return db.query(Test).filter(Test.authorId == userId).all()
 
 async def create_test(db: Session, name: str, desc: str, courseId: int, authorId: int, dateCreated: datetime):
     try:
@@ -69,8 +86,8 @@ async def create_test(db: Session, name: str, desc: str, courseId: int, authorId
         db.commit()
         db.refresh(test)
         return test
-    except:
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
 
 
 
@@ -96,8 +113,8 @@ async def create_unit(db: Session, name: str, summary: str, testId: int):
         db.commit()
         db.refresh(unit)
         return unit
-    except:
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
 
 
 

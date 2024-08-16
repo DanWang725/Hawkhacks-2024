@@ -37,3 +37,15 @@ yarn start
 cd backend
 uvicorn main:app --reload
 ```
+
+## .env
+
+You will need to contact someone with access in order to get some of these environment variables
+
+### Backend
+
+Create file `.env` in `./backend/`.
+
+1. USE_AI = 1
+2. DATABASE_URL = ...
+3. OPENAI_API_KEY = ...

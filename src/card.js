@@ -1,152 +1,140 @@
 import {
-    Box,
-    Card,
-    CardActionArea,
-    CardContent,
-    CardHeader,
-    Typography,
-  } from '@mui/material';
+  Box,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardHeader,
+  Typography,
+} from '@mui/material';
 
-import PropTypes from 'prop-types';
+import propTypes from 'prop-types';
 import dateFormat from 'dateformat';
 
-const title = 'Midterm Preperation Exam';
-const university = 'University of Guelph';
-const date = '01/01/2024';
-const testScore = '95%';
-const courseCode = 'CIS2750';
-const unitAmount = '4';
-const questionAmount = '5';
+const TestCard = ({ test = {}, openTestFunc }) => {
+  const { courseCode, date, university, units } = test;
+  let { name } = test;
+  const testScore = 'N/A';
 
+  if (name.length > 24) {
+    name = name.substring(0, 22) + '...';
+  }
 
+  const dateString = `${dateFormat(date, 'DDD, mmm dd')}`;
+  const primaryCardColour = '#72C4FF';
 
-const TestCard = ({test = {}, openTestFunc})  => {
+  return (
+    <Card
+      sx={{
+        height: 170,
+        width: 350,
+        minWidth: 350,
+        minHeight: 170,
+        border: '1px solid lightgray',
+        boxShadow: 3,
+        borderRadius: 3,
+      }}
+    >
+      <CardActionArea
+        onClick={() => {
+          openTestFunc(test);
+        }}
+      >
+        <CardHeader
+          title={name}
+          titleTypographyProps={{
+            marginTop: 0,
+            marginBottom: 0.75,
+            marginLeft: 0,
+          }}
+          subheader={university + ' - ' + dateString}
+          subheaderTypographyProps={{
+            color: '#FFFFFF',
+            fontSize: 14,
+            fontWeight: 100,
+          }}
+          fontSize={14}
+          color="#FFFFFF"
+          sx={{
+            backgroundColor: primaryCardColour,
+            height: 65,
+            color: '#FFFFFF',
+          }}
+        ></CardHeader>
 
-    const { 
-        courseCode,
-        name,
-        date,
-        university,
-        units,
-        questionAmount,
-    } = test;
-
-    const dateString = `${dateFormat(date, 'DDD, mmm dd')}`;
-
-    return (
-        <Card
-            sx={{
-                height: 200,
-                width: 350,
-                maxHeight: 175,
-                border: '1px solid lightgray',
-                boxShadow: 3,
-                borderRadius: 3,
-            }}
+        <CardContent
+          sx={{
+            flexGrow: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            margin: 0,
+            paddingLeft: 0,
+          }}
         >
-
-            <CardActionArea
-                onClick = {() => {
-                    openTestFunc(test)
-                }}
+          <Box
+            sx={{
+              width: '100%',
+              margin: 0,
+              paddingRight: 0,
+              paddingLeft: 1,
+            }}
+          >
+            <Typography
+              variant="body1"
+              fontSize={14}
+              color={primaryCardColour}
+              sx={{
+                marginTop: -1.6,
+                marginLeft: 1,
+              }}
             >
+              {' '}
+              {'Previous Results: ' + testScore}
+            </Typography>
 
-            
-            <CardHeader
-                title = {name}
-                titleTypographyProps={{marginTop: 0, marginBottom: 0.75,
-                                       marginLeft: 0,
-                }}
-                subheader = {university + ' - ' + dateString}
-                subheaderTypographyProps={{color: '#FFFFFF', fontSize: 14,
-                                           fontWeight: 100,
-                }}
-                fontSize={16}
-                color= '#FFFFFF'
-                sx= {{
-                    backgroundColor: '#72C4FF',
-                    height:65,
-                    color: '#FFFFFF',
-                }}
-            > 
-            </CardHeader>
-
-            <CardContent
-                sx ={{
-                    flexGrow: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    margin: 0,
-                    paddingLeft: 0,
-                }}
+            <Typography
+              variant="body2"
+              fontSize={30}
+              color={primaryCardColour}
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                marginTop: -3.0,
+              }}
             >
-                <Box
-                    sx={{
-                        width: '100%',
-                        margin: 0,
-                        paddingRight: 0,
-                        paddingLeft: 1,
-                    }}
-                >
+              {units + ' Units'}
+            </Typography>
 
-                    <Typography
-                        variant = "body1"
-                        fontSize = {14}
-                        color = "#72C4FF"
-                        sx = {{
-                            marginTop: -1.6,
-                            marginLeft: 1,
-                        }}
-                    > {'Previous Results: ' + testScore}</Typography>
-
-                    <Typography
-                        variant = 'body2'
-                        fontSize = {30}
-                        color = "#72C4FF"
-                        sx = {{
-                            display: 'flex',
-                            justifyContent: 'flex-end',
-                            marginTop: -3.0,
-
-
-                        }}
-                    >
-                        {'U: ' + (unitAmount).length}
-                    </Typography>
-
-                    <Typography
-                        variant = "body1"
-                        fontSize = {30}
-
-                        color = "#72C4FF"
-                        sx = {{ 
-                            marginTop: 2,
-                            marginLeft: 1,
-                            fontWeight: 550,
-                        }}
-
-                    > {courseCode}
-                    </Typography>
-                    
-                </Box>
-            </CardContent>
-            </CardActionArea>
-        </Card>
-
-    );
-}
-
-TestCard.PropTypes = {
-    test: PropTypes.exact({
-        courseCode: PropTypes.string,
-        name: PropTypes.string,
-        date: PropTypes.date,
-        university: PropTypes.string,
-        units: PropTypes.string,
-        questionAmount: PropTypes.number,
-    }),
-    openTestFunc: PropTypes.func,
+            <Typography
+              variant="body1"
+              fontSize={22}
+              color={primaryCardColour}
+              sx={{
+                marginTop: 2,
+                marginLeft: 1,
+                fontWeight: 550,
+              }}
+            >
+              {' '}
+              {courseCode}
+            </Typography>
+          </Box>
+        </CardContent>
+      </CardActionArea>
+    </Card>
+  );
 };
 
+TestCard.propTypes = {
+  id: propTypes.number,
+  name: propTypes.string,
+  date: propTypes.instanceOf(Date),
+  courseName: propTypes.string,
+  courseCode: propTypes.string,
+  university: propTypes.string,
+  units: propTypes.number,
+  questionAmount: propTypes.number,
+  authorName: propTypes.string,
+  openTestFunc: propTypes.func,
+};
 
 export default TestCard;

@@ -8,7 +8,7 @@ const postCourse = async ({ name, code, desc, university }) => {
       desc,
       university,
     };
-    const { data } = await Axios.post(`/course`, dataPayload);
+    const { data } = await Axios.post(`/create/course`, dataPayload);
     return { status: 200, data };
   } catch (error) {
     return { status: 400, ...error };

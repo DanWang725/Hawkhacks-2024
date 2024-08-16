@@ -18,27 +18,22 @@ const CreateTest = () => {
   const handleSubmit = (e) => {
     setIsSubmitting(true);
     e.preventDefault();
-    console.log('submitted');
-    console.log(testName);
-    console.log(university);
-    console.log(courseCode);
-    console.log(courseName);
-    console.log(unitTitles.current);
-    console.log(unitTexts.current);
     const data = {
       testName,
       university,
       courseCode,
       courseName,
-      unitName: Object.values(unitTitles.current),
-      unitContent: Object.values(unitTexts.current),
+      unitNames: Object.values(unitTitles.current),
+      unitContents: Object.values(unitTexts.current),
     };
-    console.log(data);
-    completePostTestProcess(data).then((res) => {
-      console.log(res);
-      setIsSubmitting(false);
-      navigate(`/test/${res.data.id}`);
-    });
+    completePostTestProcess(data)
+      .then((res) => {
+        setIsSubmitting(false);
+        navigate(`/test/${res.data.id}`);
+      })
+      .catch((err) => {
+        console.error('Error creating test: ', err);
+      });
   };
 
   return (

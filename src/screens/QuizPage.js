@@ -7,16 +7,21 @@ const QuizPage = () => {
   const { id } = useParams();
   const [testData, setTestData] = useState(null);
   useEffect(() => {
-    retrieveByTestId(id).then((res) => {
-      if (res.status === 200) {
-        setTestData({ ...res.data.test, questions: res.data.questions });
-      }
-    });
+    retrieveByTestId(id)
+      .then((res) => {
+        if (res.status === 200) {
+          setTestData({
+            ...res.data,
+            questions: res.data.questions,
+          });
+        }
+      })
+      .catch(console.error);
   }, [id]);
 
-  useEffect(() => {
-    console.log(testData);
-  }, [testData]);
+  // useEffect(() => {
+  //   console.log(testData);
+  // }, [testData]);
   return testData ? (
     <div>
       <TestPage

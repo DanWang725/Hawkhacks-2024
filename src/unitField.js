@@ -40,7 +40,7 @@ const UnitField = ({
         minRows={10}
         maxRows={30}
         inputProps={{
-          maxlength: CHARACTER_LIMIT,
+          maxLength: CHARACTER_LIMIT,
         }}
         value={textValue}
         onChange={(e) => {

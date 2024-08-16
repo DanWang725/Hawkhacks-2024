@@ -3,6 +3,6 @@
 import axios from 'axios';
 process.env;
 export const Axios = axios.create({
-  baseURL: process.env?.REACT_APP_FLASK_URL ?? 'http://localhost:3000', // use env variable to determine url to retrieve from
+  baseURL: process.env?.REACT_APP_FASTAPI_URL ?? 'http://localhost:3000', // use env variable to determine url to retrieve from
   timeout: 30000,
 });

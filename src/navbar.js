@@ -24,7 +24,7 @@ const Navbar = () => {
             fontSize: '22px',
           })}
         >
-          Study Buddy
+          Quiz++
         </NavLink>
       </div>
 

@@ -6,8 +6,8 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full flex overflow-auto min-h-screen items-center flex-col font-[Urbanist]">
-      <div className="w-full py-72">
+    <div className="w-full flex overflow-auto min-h-screen items-center flex-col">
+      <div className="w-full h-[100vh] items-center flex">
         <div className="w-full flex items-center justify-center flex-col">
           <div className="flex items-center flex-col justify-start">
             <h1 className="pb-10 text-primary text-center text-6xl font-bold">
@@ -35,7 +35,7 @@ const HomePage = () => {
       <div className="w-full flex items-center justify-center bg-secondary">
         <div className="w-full flex text-primary items-center flex-col justify-center">
           <div className="gap-16 flex items-center py-16 px-12 flex-col justify-start">
-            <div className="flex items-center flex-col justify-start">
+            <div className="flex items-center flex-col justify-start text-white">
               <p className="text-l uppercase pb-4">features</p>
               <h2 className="mb-8 text-4xl font-semibold text-center">
                 Features to Enhance Your Study Experience
@@ -45,7 +45,7 @@ const HomePage = () => {
                 effective
               </p>
             </div>
-            <div className="w-full grid md:grid-cols-2 grid-cols-1 gap-8 flex">
+            <div className="w-full grid md:grid-cols-2 grid-cols-1 gap-8 flex text-black">
               <FeatureCard
                 heading="Automatic Quiz Generation"
                 subHeading="Turn your notes into a customized practice quiz instantly"
