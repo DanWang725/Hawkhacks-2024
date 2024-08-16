@@ -74,51 +74,6 @@ const TestCard = ({ test = {}, openTestFunc }) => {
               {courseCode}
             </p>
           </div>
-          {/* <Box
-            sx={{
-              width: '100%',
-            }}
-          >
-            <Typography
-              variant="body1"
-              fontSize={14}
-              color={primaryCardColour}
-              sx={{
-                display: 'flex',
-                marginLeft: 1,
-              }}
-            >
-              {'Previous Results: ' + testScore}
-            </Typography>
-
-            <Typography
-              variant="body1"
-              fontSize={14}
-              color={primaryCardColour}
-              sx={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                marginRight: 1,
-              }}
-            >
-              {units + ' Units'}
-            </Typography>
-            
-
-            <Typography
-              variant="body1"
-              fontSize={22}
-              color={primaryCardColour}
-              sx={{
-                marginTop: 2,
-                marginLeft: 1,
-                fontWeight: 550,
-              }}
-            >
-              {' '}
-              {courseCode}
-            </Typography>
-          </Box> */}
         </CardContent>
       </CardActionArea>
     </Card>
