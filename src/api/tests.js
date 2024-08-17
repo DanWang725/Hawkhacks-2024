@@ -89,7 +89,7 @@ const postTest = async (name, userId, courseId, desc = '') => {
       courseId: courseId,
       authorId: userId,
     };
-    const { data } = await Axios.post('/create/test', dataPayload, {
+    const { data } = await Axios.post('/tests', dataPayload, {
       timeout: 120000, // wait up to 2 minutes
     });
     return { status: 200, data };

@@ -7,7 +7,7 @@ const postUnit = async (unitName, unitSummary, testId) => {
     testId: testId,
   };
   try {
-    const { data } = await Axios.post('/create/unit', dataPayload);
+    const { data } = await Axios.post('/units', dataPayload);
     return { status: 200, data };
   } catch (error) {
     return { status: 200, ...error };

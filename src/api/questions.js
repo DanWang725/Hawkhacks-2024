@@ -2,7 +2,7 @@ import { Axios } from '../axios';
 
 const postTestQuestions = async (testId) => {
   try {
-    const { data } = await Axios.post(`/create/testquestions?testId=${testId}`);
+    const { data } = await Axios.post(`/testquestions?testId=${testId}`);
     return { status: 200, data };
   } catch (error) {
     return { status: 200, ...error };

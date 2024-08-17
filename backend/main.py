@@ -25,7 +25,7 @@ app.add_middleware(
 )
 
 
-@app.post("/create/user")
+@app.post("/users")
 async def create_user(request: Request, db: Session = Depends(database.get_db)):
     data = await request.json()
     user = await crud.create_user(db=db, name=data.get("name"), email=data.get("email"), password=data.get("password"))
@@ -50,7 +50,7 @@ async def get_courses(courseId: int = None, db: Session = Depends(database.get_d
     return await crud.get_all_courses(db)
 
 
-@app.post("/create/course")
+@app.post("/courses")
 async def create_course(request: Request, db: Session = Depends(database.get_db)):
     data = await request.json()
     course = await crud.create_course(db=db, name=data.get("name"), code=data.get("code"), desc=data.get("desc"), university=data.get("university"))
@@ -117,7 +117,7 @@ async def get_tests(testId: int = None, userId: int = None, db: Session = Depend
     return await crud.get_all_tests(db)
 
 
-@app.post("/create/test")
+@app.post("/tests")
 async def create_test(request: Request, db: Session = Depends(database.get_db)):
     data = await request.json()
     courseId = data.get("courseId")
@@ -142,7 +142,7 @@ async def create_test(request: Request, db: Session = Depends(database.get_db)):
     return test
 
 
-@app.post("/create/unit")
+@app.post("/units")
 async def create_unit(request: Request, db: Session = Depends(database.get_db)):
     data = await request.json()
     testId = data.get("testId")
@@ -157,7 +157,7 @@ async def create_unit(request: Request, db: Session = Depends(database.get_db)):
     return unit
 
 
-@app.post("/create/testquestions")
+@app.post("/testquestions")
 async def create_test_questions(testId: int, db: Session = Depends(database.get_db)):
     
     # make sure the test exists
@@ -188,11 +188,11 @@ async def create_test_questions(testId: int, db: Session = Depends(database.get_
 
 
 # the frontend must make requests in the following order to create a test:
-# 1. create a course (POST /create/course)
-# 2. create a test (POST /create/test)
+# 1. create a course (POST /courses)
+# 2. create a test (POST /tests)
 # 2a. make sure you save the test.id from the response
-# 3. create all units for test (POST /create/unit)
-# 4. generate test questions (POST /create/testquestions)
+# 3. create all units for test (POST /units)
+# 4. generate test questions (POST /testquestions)
 
 
 
