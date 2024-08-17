@@ -24,7 +24,11 @@ const Navbar = () => {
             fontSize: '22px',
           })}
         >
-          Quiz++
+          <img
+            src="/images/logo-dark-blue.png"
+            alt="Quiz++ logo"
+            className="h-8 w-auto"
+          />
         </NavLink>
       </div>
 

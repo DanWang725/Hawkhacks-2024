@@ -1,7 +1,7 @@
 import { TextField, Box, Button } from '@mui/material';
 import { useState, useRef } from 'react';
-import UnitField from './unitField';
-import { completePostTestProcess } from './api/tests';
+import UnitField from '../components/UnitField';
+import { completePostTestProcess } from '../api/tests';
 import { useNavigate } from 'react-router-dom';
 
 const CreateTest = () => {

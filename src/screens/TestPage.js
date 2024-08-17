@@ -1,6 +1,6 @@
 import { Box } from '@mui/system';
 import { Button } from '@mui/material';
-import Question from './testQuestion';
+import Question from '../components/TestQuestion';
 import { useState } from 'react';
 
 const TestPage = ({ questionBank, testName }) => {
@@ -22,7 +22,7 @@ const TestPage = ({ questionBank, testName }) => {
         autoComplete="off"
       >
         <div className="w-[45rem] mx-auto my-16">
-          <h1 className="text-6xl font-bold">{testName}</h1>
+          <h1 className="text-6xl font-bold my-8">{testName}</h1>
           {questionBank.map((question, index) => {
             return (
               <Question

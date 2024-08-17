@@ -1,8 +1,8 @@
-import CreateTest from './createTest';
+import CreateTest from './screens/CreateTestPage.js';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import DashboardPage from './DashboardPage.js';
-import Navbar from './Navbar.js';
+import DashboardPage from './screens/DashboardPage.js';
+import Navbar from './components/Navbar.js';
 import QuizPage from './screens/QuizPage.js';
 import { Toaster } from 'react-hot-toast';
 import HomePage from './screens/HomePage.js';

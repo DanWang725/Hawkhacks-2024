@@ -1,6 +1,6 @@
-import QuizCard from './components/QuizCard';
-import CardRow from './components/CardRow';
-import { retrieveTestCardInfo } from '../../Hawkhacks-2024/src/api/tests';
+import QuizCard from '../components/QuizCard';
+import CardRow from '../components/CardRow';
+import { retrieveTestCardInfo } from '../api/tests';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Skeleton } from '@mui/material';
@@ -60,7 +60,7 @@ const DashboardPage = () => {
 
   return (
     <div>
-      <div className="w-full flex flex-col text-primary">
+      <div className="w-full flex flex-col text-black">
         <div className="mt-24 mx-12 lg:mx-28">
           <h1 className="text-3xl font-bold mb-4">Your Tests</h1>
           <CardRow cardWidth={400}>

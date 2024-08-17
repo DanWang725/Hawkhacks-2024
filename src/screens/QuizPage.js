@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { retrieveByTestId } from '../api/tests';
 import { useEffect, useState } from 'react';
-import TestPage from '../testPage';
+import TestPage from './TestPage';
 
 const QuizPage = () => {
   const { id } = useParams();

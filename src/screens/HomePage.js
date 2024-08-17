@@ -1,4 +1,3 @@
-import '../styles/global.css';
 import FeatureCard from '../components/FeatureCard.js';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
