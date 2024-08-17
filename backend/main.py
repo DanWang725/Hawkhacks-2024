@@ -10,12 +10,12 @@ import ChatCompletionManager
 app = FastAPI()
 openAiClient = ChatCompletionManager.Manager()
 
+# These are the allowed origins for api calls
 origins = [
     "http://localhost:3000",  # React development server
     "http://127.0.0.1:3000",  # Another possible address for React
 ]
 
-# Add the CORSMiddleware to the FastAPI app
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,  # Set the allowed origins

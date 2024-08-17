@@ -6,6 +6,8 @@ import Navbar from './components/Navbar.js';
 import QuizPage from './screens/QuizPage.js';
 import { Toaster } from 'react-hot-toast';
 import HomePage from './screens/HomePage.js';
+import LoginPage from './screens/account/LoginPage.js';
+import SignUpPage from './screens/account/SignUpPage.js';
 
 const theme = createTheme({
   palette: {
@@ -28,6 +30,8 @@ const App = () => {
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="create" element={<CreateTest />} />
             <Route path="test/:id" element={<QuizPage />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="signup" element={<SignUpPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

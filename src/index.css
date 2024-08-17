@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --border-radius: 0.25rem;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -65,5 +69,64 @@ code {
     );
     background-size: 400% 400%;
     animation: gradientAnimation 15s ease infinite;
+  }
+
+  .account-card {
+    border-radius: var(--border-radius);
+  }
+
+  .account-card .inner {
+    border-radius: var(--border-radius);
+  }
+
+  .animated-glowing-border {
+    position: relative;
+    border-radius: var(--border-radius);
+    padding: 2px;
+  }
+
+  .animated-glowing-border .inner {
+    border-radius: calc(--border-radius / 2);
+  }
+
+  .animated-glowing-border::before,
+  .animated-glowing-border::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(
+      45deg,
+      #1e2a69,
+      #72c4ff,
+      #1e2a69,
+      #1982c4,
+      #1e2a69
+    );
+    background-size: 400%;
+    z-index: -1;
+    animation: glow 20s linear infinite;
+    border-radius: var(--border-radius);
+  }
+
+  .animated-glowing-border::after {
+    filter: blur(10px);
+    transform: translate3d(0, 0, 0);
+  }
+
+  @keyframes glow {
+    0% {
+      background-position: 0 0;
+    }
+
+    50% {
+      background-position: 100% 0;
+    }
+
+    100% {
+      background-position: 0 0;
+    }
   }
 }
