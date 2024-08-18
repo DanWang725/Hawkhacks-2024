@@ -28,9 +28,23 @@ app.add_middleware(
 @app.post("/users")
 async def create_user(request: Request, db: Session = Depends(database.get_db)):
     data = await request.json()
-    user = await crud.create_user(db=db, name=data.get("name"), email=data.get("email"), password=data.get("password"))
+    user = await crud.create_user(db=db, name=data.get("username"), email=data.get("email"), password=data.get("password"))
     
-    return user
+    return { "status": 200, "id": user.id, "username": user.name, "email": user.email }
+
+
+@app.post("/users/login")
+async def login(request: Request, db: Session = Depends(database.get_db)):
+    data = await request.json()
+    user = await crud.get_user_by_email(db, email=data.get("email"))
+    
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if user.password != data.get("password"):
+        raise HTTPException(status_code=401, detail="Incorrect password")
+    
+    return { "status": 200, "id": user.id, "username": user.name, "email": user.email }
 
 
 @app.get("/users/{userId}")

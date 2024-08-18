@@ -20,6 +20,13 @@ async def create_user(db: Session, name: str, email: str, password: str):
     if existing_user:
         raise HTTPException(status_code=409, detail="Email already registered")
     
+    if (len(name) == 0):
+        raise HTTPException(status_code=400, detail="Name cannot be empty")
+    if (len(email) == 0):
+        raise HTTPException(status_code=400, detail="Email cannot be empty")
+    if (len(password) == 0):
+        raise HTTPException(status_code=400, detail="Password cannot be empty")
+    
     try:
         user = User(name=name, email=email, password=password)
         db.add(user)

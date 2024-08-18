@@ -3,15 +3,31 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import toast from 'react-hot-toast';
 import { Box } from '@mui/system';
+import { postLogin } from '../../api/accounts';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState(''); // WARNING: THIS IS LITERALLY PLAIN TEXT PASSWORD (VERY BAD!!!)
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = (e) => {
+    setIsSubmitting(true);
     e.preventDefault();
-    console.log(email, password);
+
+    postLogin({ email, password })
+      .then((res) => {
+        if (res.status === 200) {
+          navigate(`/`);
+          toast.success('Login successful!');
+        } else {
+          toast.error('Login failed!');
+        }
+      })
+      .catch(console.error)
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   return (
@@ -27,7 +43,6 @@ const LoginPage = () => {
               onSubmit={(e) => {
                 handleSubmit(e);
               }}
-              noValidate
               autoComplete="off"
             >
               <div className="mb-4">
@@ -40,9 +55,11 @@ const LoginPage = () => {
                 <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-primary leading-tight focus:outline-none focus:shadow-outline"
                   id="email"
-                  type="text"
+                  type="email"
+                  required
                   placeholder="example@domain.ca"
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={isSubmitting}
                 />
               </div>
               <div className="mb-4">
@@ -67,8 +84,10 @@ const LoginPage = () => {
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-primary mb-3 leading-tight focus:outline-none focus:shadow-outline"
                   id="password"
                   type="password"
+                  required
                   placeholder="********"
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={isSubmitting}
                 />
               </div>
               <div className="w-full mb-4">
@@ -78,6 +97,7 @@ const LoginPage = () => {
                     onClick={() => {
                       navigate('/signup');
                     }}
+                    className="underline"
                   >
                     Sign Up
                   </button>
@@ -88,6 +108,7 @@ const LoginPage = () => {
                 sx={{ color: 'white', width: '100%', textTransform: 'none' }}
                 color="tertiary"
                 variant="contained"
+                disabled={isSubmitting}
               >
                 Sign In
               </Button>
