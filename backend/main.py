@@ -33,7 +33,7 @@ async def create_user(request: Request, db: Session = Depends(database.get_db)):
     return user
 
 
-@app.get("/users")
+@app.get("/users/{userId}")
 async def get_user(userId: int, db: Session = Depends(database.get_db)):
     user = await crud.get_user_by_id(db, userId)
     if user is None:
@@ -42,11 +42,19 @@ async def get_user(userId: int, db: Session = Depends(database.get_db)):
     return user
 
 
-@app.get("/courses")
-async def get_courses(courseId: int = None, db: Session = Depends(database.get_db)):
-    if courseId:
-        return await crud.get_course_by_id(db, id=courseId)
+@app.get("/courses/{courseId}")
+async def get_course(courseId: int, db: Session = Depends(database.get_db)):
+    course = await crud.get_course_by_id(db, id=courseId)
+    if course is None:
+        raise HTTPException(status_code=404, detail="Course not found")
     
+    return course
+    
+    
+
+
+@app.get("/courses")
+async def get_courses(db: Session = Depends(database.get_db)):
     return await crud.get_all_courses(db)
 
 
@@ -159,7 +167,6 @@ async def create_unit(request: Request, db: Session = Depends(database.get_db)):
 
 @app.post("/testquestions")
 async def create_test_questions(testId: int, db: Session = Depends(database.get_db)):
-    
     # make sure the test exists
     test = await crud.get_test_by_id(db=db, id=testId)
     if test is None:
@@ -184,6 +191,28 @@ async def create_test_questions(testId: int, db: Session = Depends(database.get_
     
     return {"status": 200, "message": "Test questions created successfully"}
     
+
+@app.post("/testResults") # NOT TESTED! 
+async def test_results(request: Request, db: Session = Depends(database.get_db)):
+    data = await request.json()
+    userId = data.get("userId")
+    answers = data.get("answers")
+    # each answer in answers should be a tuple of (questionId, answer)
+    
+    if userId is None:
+        raise HTTPException(status_code=400, detail="Missing required field 'userId'")
+    
+    if answers is None:
+        raise HTTPException(status_code=400, detail="Missing required field 'answers'")
+    
+    for answer in answers:
+        userAnswer = answer.get("answer")
+        questionId = answer.get("questionId")
+        
+        if userAnswer is None or questionId is None:
+            continue
+        
+        crud.create_question_answer(db=db, userId=userId, answer=userAnswer, questionId=questionId)
 
 
 

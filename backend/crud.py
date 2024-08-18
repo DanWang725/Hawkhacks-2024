@@ -137,3 +137,24 @@ async def create_multiple_choice_question(db: Session, testId: int, question: st
         return question
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
+
+
+
+###############
+#   ANSWERS   #
+###############
+
+async def get_answer_by_id(db: Session, id: int):
+    return db.query(UserQuestionAnswer).filter(UserQuestionAnswer.id == id).first()
+
+async def create_question_answer(db: Session, userId: int, answer: int, questionId: int):
+    try:
+        question = await get_question_by_id(db, questionId)
+        isCorrect = question.answer == answer
+        answer = UserQuestionAnswer(userId=userId, answer=answer, isCorrect=isCorrect, questionId=questionId)
+        db.add(answer)
+        db.commit()
+        db.refresh(answer)
+        return answer
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")

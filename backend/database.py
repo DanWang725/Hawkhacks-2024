@@ -16,7 +16,7 @@ class User(Base):
     __tablename__ = "user"
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     name = Column(String(30), index=True, nullable=False)
-    email = Column(String(30), unique=True)
+    email = Column(String(30), unique=True, nullable=False)
     password = Column(String(30), nullable=False)
 
 
@@ -63,7 +63,7 @@ class TestQuestion(Base):
 class UserQuestionAnswer(Base):
     __tablename__ = "userQuestionAnswer"
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
-    ownerId = Column(Integer, ForeignKey("user.id"), nullable=False)
+    userId = Column(Integer, ForeignKey("user.id"), nullable=False)
     answer = Column(Integer, nullable=False)
     isCorrect = Column(Boolean, nullable=False)
     questionId = Column(Integer, ForeignKey("testQuestion.id"), nullable=False)
