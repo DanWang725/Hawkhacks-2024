@@ -79,7 +79,7 @@ const DashboardPage = () => {
         </div>
         <div className="mt-16 mx-12 lg:mx-28">
           <h1 className="text-3xl font-bold mb-4">Trending</h1>
-          <CardRow cardWidth={350}>
+          <CardRow cardWidth={400}>
             {tests.length ? (
               tests.map((test) => (
                 <QuizCard
@@ -95,7 +95,7 @@ const DashboardPage = () => {
         </div>
         <div className="my-16 mx-12 lg:mx-28">
           <h1 className="text-3xl font-bold mb-4">Top Quizzes For You</h1>
-          <CardRow cardWidth={350}>
+          <CardRow cardWidth={400}>
             {tests.length ? (
               tests.map((test) => (
                 <QuizCard

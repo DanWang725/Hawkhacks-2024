@@ -8,14 +8,15 @@ const CardRow = ({ cardWidth, children }) => {
   const [scrollIndex, setScrollIndex] = useState(0);
   const cardGap = 20;
 
-  const containerRef = useRef();
+  const maxWidthContainer = useRef(null);
   const cardRowRef = useRef(null);
 
   useEffect(() => {
     const handleResize = () => {
-      if (cardRowRef.current) {
-        const rowWidth = cardRowRef.current.offsetWidth;
-        const maxVisibleCards = Math.floor(rowWidth / cardWidth);
+      if (maxWidthContainer.current) {
+        const rowWidth = maxWidthContainer.current.offsetWidth;
+        const maxVisibleCards = Math.floor(rowWidth / (cardWidth + cardGap));
+        cardRowRef.current.style.width = `${maxVisibleCards * (cardWidth + cardGap)}px`;
         setVisibleCount(maxVisibleCards);
       }
     };
@@ -35,39 +36,38 @@ const CardRow = ({ cardWidth, children }) => {
   );
 
   return (
-    <div
-      ref={cardRowRef}
-      className="w-full flex flex-col items-center justify-center relative"
-    >
-      <IconButton
-        aria-label="scroll left"
-        color="secondary"
-        style={{ position: 'absolute', left: '-30px' }}
-        disabled={scrollIndex === 0}
-        onClick={() => setScrollIndex(scrollIndex - 1)}
-      >
-        <ArrowLeftIcon />
-      </IconButton>
+    <div ref={maxWidthContainer} className="w-full">
       <div
-        ref={containerRef}
-        className="w-full overflow-x-scroll scroll-smooth no-scrollbar overscroll-x-contain"
+        ref={cardRowRef}
+        className="flex flex-col items-center justify-center relative"
       >
-        <div
-          className="w-full items-center flex p-[4px]"
-          style={{ gap: cardGap }}
+        <IconButton
+          aria-label="scroll left"
+          color="secondary"
+          style={{ position: 'absolute', left: '-30px' }}
+          disabled={scrollIndex === 0}
+          onClick={() => setScrollIndex(scrollIndex - 1)}
         >
-          {visibleChildren}
+          <ArrowLeftIcon />
+        </IconButton>
+        <div className="w-full overflow-x-scroll scroll-smooth no-scrollbar overscroll-x-contain">
+          <div
+            className="w-full items-center flex p-[4px]"
+            style={{ gap: cardGap }}
+          >
+            {visibleChildren}
+          </div>
         </div>
+        <IconButton
+          aria-label="scroll right"
+          color="secondary"
+          onClick={() => setScrollIndex(scrollIndex + 1)}
+          disabled={scrollIndex + visibleCount >= children.length}
+          style={{ position: 'absolute', right: '-30px' }}
+        >
+          <ArrowRightIcon />
+        </IconButton>
       </div>
-      <IconButton
-        aria-label="scroll right"
-        color="secondary"
-        onClick={() => setScrollIndex(scrollIndex + 1)}
-        disabled={scrollIndex + visibleCount >= children.length}
-        style={{ position: 'absolute', right: '-30px' }}
-      >
-        <ArrowRightIcon />
-      </IconButton>
     </div>
   );
 };

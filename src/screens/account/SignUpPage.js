@@ -43,7 +43,7 @@ const SignUpPage = () => {
                     placeholder="Email"
                   />
                 </div>
-                <div className="mb-6">
+                <div className="mb-4">
                   <label
                     className="block text-primary text-sm font-bold mb-2"
                     htmlFor="password"
