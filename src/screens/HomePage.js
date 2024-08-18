@@ -26,7 +26,7 @@ const HomePage = () => {
                 sx={{ color: 'white' }}
                 className="buttonFilled white"
                 onClick={() => {
-                  navigate('/create');
+                  navigate('/signup');
                 }}
               >
                 Get Started

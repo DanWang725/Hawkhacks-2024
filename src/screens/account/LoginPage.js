@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import toast from 'react-hot-toast';
+import { Box } from '@mui/system';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState(''); // WARNING: THIS IS LITERALLY PLAIN TEXT PASSWORD (VERY BAD!!!)
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(email, password);
+  };
 
   return (
     <div className="w-screen h-screen flex justify-center items-center">
@@ -14,19 +22,27 @@ const LoginPage = () => {
             <h2 className="text-2xl font-bold text-center text-primary mb-6">
               Login
             </h2>
-            <form>
+            <Box
+              component="form"
+              onSubmit={(e) => {
+                handleSubmit(e);
+              }}
+              noValidate
+              autoComplete="off"
+            >
               <div className="mb-4">
                 <label
                   className="block text-primary text-sm font-bold mb-2"
-                  htmlFor="username"
+                  htmlFor="email"
                 >
-                  Username
+                  Email
                 </label>
                 <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-primary leading-tight focus:outline-none focus:shadow-outline"
-                  id="username"
+                  id="email"
                   type="text"
-                  placeholder="Username"
+                  placeholder="example@domain.ca"
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className="mb-4">
@@ -52,6 +68,7 @@ const LoginPage = () => {
                   id="password"
                   type="password"
                   placeholder="********"
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
               <div className="w-full mb-4">
@@ -67,13 +84,14 @@ const LoginPage = () => {
                 </p>
               </div>
               <Button
+                type="submit"
                 sx={{ color: 'white', width: '100%', textTransform: 'none' }}
                 color="tertiary"
                 variant="contained"
               >
                 Sign In
               </Button>
-            </form>
+            </Box>
           </div>
         </div>
       </div>

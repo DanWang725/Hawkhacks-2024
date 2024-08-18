@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
+import { Box } from '@mui/system';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState(''); // WARNING: THIS IS LITERALLY PLAIN TEXT PASSWORD (VERY BAD!!!)
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(username, email, password);
+  };
 
   return (
     <div className="w-screen h-screen flex justify-center items-center">
@@ -14,7 +23,14 @@ const SignUpPage = () => {
               <h2 className="text-2xl font-bold text-center text-primary mb-6">
                 Sign Up
               </h2>
-              <form>
+              <Box
+                component="form"
+                onSubmit={(e) => {
+                  handleSubmit(e);
+                }}
+                noValidate
+                autoComplete="off"
+              >
                 <div className="mb-4">
                   <label
                     className="block text-primary text-sm font-bold mb-2"
@@ -27,6 +43,7 @@ const SignUpPage = () => {
                     id="username"
                     type="text"
                     placeholder="Username"
+                    onChange={(e) => setUsername(e.target.value)}
                   />
                 </div>
                 <div className="mb-4">
@@ -40,7 +57,8 @@ const SignUpPage = () => {
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-primary leading-tight focus:outline-none focus:shadow-outline"
                     id="email"
                     type="email"
-                    placeholder="Email"
+                    placeholder="example@domain.ca"
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 <div className="mb-4">
@@ -55,6 +73,7 @@ const SignUpPage = () => {
                     id="password"
                     type="password"
                     placeholder="********"
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
                 <div className="w-full mb-4">
@@ -70,13 +89,14 @@ const SignUpPage = () => {
                   </p>
                 </div>
                 <Button
+                  type="submit"
                   sx={{ color: 'white', width: '100%', textTransform: 'none' }}
                   color="tertiary"
                   variant="contained"
                 >
                   Create Account
                 </Button>
-              </form>
+              </Box>
             </div>
           </div>
         </div>
