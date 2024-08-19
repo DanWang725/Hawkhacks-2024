@@ -7,7 +7,6 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Check if the user is already logged in by calling a protected endpoint
     const checkLoginStatus = async () => {
       try {
         const response = await Axios.get('/users/me');

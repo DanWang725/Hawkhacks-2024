@@ -1,10 +1,12 @@
+import { useState, useRef, useContext, useEffect } from 'react';
 import { TextField, Box, Button } from '@mui/material';
-import { useState, useRef } from 'react';
 import UnitField from '../components/UnitField';
 import { completePostTestProcess } from '../api/tests';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
 
 const CreateTest = () => {
+  const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const [numUnits, setNumUnits] = useState(1);
   const [testName, setTestName] = useState('');
@@ -14,6 +16,13 @@ const CreateTest = () => {
   const unitTitles = useRef({ 0: '' });
   const unitTexts = useRef({ 0: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    // if user is not signed in, redirect to log in page
+    if (user === null) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
 
   const handleSubmit = (e) => {
     setIsSubmitting(true);

@@ -55,17 +55,14 @@ async def create_user(db: Session, name: str, email: str, password: str):
 ##################
 
 async def get_session_by_id(db: Session, id: str):
-    try:
-        session = db.query(SessionModel).filter(SessionModel.id == id).first()
-        if not session:
-            raise HTTPException(status_code=401, detail="Invalid session")
-        
-        present = datetime.now().replace(tzinfo=utc)
-        if session.expireAt and present > session.expireAt.replace(tzinfo=utc):
-            db.delete(session)
-            raise HTTPException(status_code=401, detail="Session expired")
-    except Exception:
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+    session = db.query(SessionModel).filter(SessionModel.id == id).first()
+    if not session:
+        raise HTTPException(status_code=401, detail="Invalid session")
+    
+    present = datetime.now().replace(tzinfo=utc)
+    if session.expireAt and present > session.expireAt.replace(tzinfo=utc):
+        db.delete(session)
+        raise HTTPException(status_code=401, detail="Session expired")
     
     return session
 

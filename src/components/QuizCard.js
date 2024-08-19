@@ -1,5 +1,6 @@
 import React from 'react';
 import propTypes from 'prop-types';
+import { Skeleton } from '@mui/material';
 
 const QuizCard = ({ test = {}, openTestFunc }) => {
   const {
@@ -66,4 +67,41 @@ QuizCard.propTypes = {
   openTestFunc: propTypes.func,
 };
 
-export default QuizCard;
+const SkeletonQuizCard = () => {
+  return (
+    <>
+      <Skeleton
+        variant="rounded"
+        width={400}
+        height={200}
+        style={{ minWidth: 400, minHeight: 200 }}
+      />
+      <Skeleton
+        variant="rounded"
+        width={400}
+        height={200}
+        style={{ minWidth: 400, minHeight: 200 }}
+      />
+      <Skeleton
+        variant="rounded"
+        width={400}
+        height={200}
+        style={{ minWidth: 400, minHeight: 200 }}
+      />
+      <Skeleton
+        variant="rounded"
+        width={400}
+        height={200}
+        style={{ minWidth: 400, minHeight: 200 }}
+      />
+      <Skeleton
+        variant="rounded"
+        width={400}
+        height={200}
+        style={{ minWidth: 400, minHeight: 200 }}
+      />
+    </>
+  );
+};
+
+export { QuizCard, SkeletonQuizCard };

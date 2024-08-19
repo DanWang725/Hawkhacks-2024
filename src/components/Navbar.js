@@ -1,5 +1,6 @@
-import { useContext } from 'react';
-import { Button } from '@mui/material';
+import { useContext, useState } from 'react';
+import { Button, Menu, MenuItem, IconButton } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import toast from 'react-hot-toast';
@@ -7,14 +8,23 @@ import { postLogout } from '../api/accounts';
 
 const linkStyle = {
   fontSize: '18px',
-  marginLeft: '2rem',
-  marginRight: '2rem',
+  marginLeft: '1.75rem',
+  marginRight: '1.75rem',
   fontWeight: 'bold',
 };
 
 const Navbar = () => {
   const { user, setUser } = useContext(UserContext);
+  const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
+
+  const handleOpenMenu = (e) => {
+    setAnchorEl(e.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
 
   const handleLogout = () => {
     try {
@@ -48,7 +58,7 @@ const Navbar = () => {
         </NavLink>
       </div>
 
-      <div className="mx-auto flex flex-row">
+      <div className="hidden md:block md:mx-auto flex flex-row gap-4">
         <NavLink
           to="/"
           style={({ isActive }) => ({
@@ -76,6 +86,47 @@ const Navbar = () => {
         >
           Create
         </NavLink>
+      </div>
+
+      <div className="block md:hidden mr-auto">
+        <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          onClick={handleOpenMenu}
+        >
+          <MenuIcon />
+        </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleCloseMenu}
+        >
+          <MenuItem
+            onClick={() => {
+              navigate('/');
+              handleCloseMenu();
+            }}
+          >
+            Home
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              navigate('/dashboard');
+              handleCloseMenu();
+            }}
+          >
+            Dashboard
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              navigate('/create');
+              handleCloseMenu();
+            }}
+          >
+            Create
+          </MenuItem>
+        </Menu>
       </div>
 
       <nav className="flex gap-4 sm:gap-6">

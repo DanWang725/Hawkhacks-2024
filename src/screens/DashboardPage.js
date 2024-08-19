@@ -1,48 +1,12 @@
-import QuizCard from '../components/QuizCard';
+import { useEffect, useState, useContext } from 'react';
+import { QuizCard, SkeletonQuizCard } from '../components/QuizCard';
 import CardRow from '../components/CardRow';
 import { retrieveTestCardInfo } from '../api/tests';
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Skeleton } from '@mui/material';
-
-const SkeletonTests = () => {
-  return (
-    <>
-      <Skeleton
-        variant="rounded"
-        width={400}
-        height={200}
-        style={{ minWidth: 400, minHeight: 200 }}
-      />
-      <Skeleton
-        variant="rounded"
-        width={400}
-        height={200}
-        style={{ minWidth: 400, minHeight: 200 }}
-      />
-      <Skeleton
-        variant="rounded"
-        width={400}
-        height={200}
-        style={{ minWidth: 400, minHeight: 200 }}
-      />
-      <Skeleton
-        variant="rounded"
-        width={400}
-        height={200}
-        style={{ minWidth: 400, minHeight: 200 }}
-      />
-      <Skeleton
-        variant="rounded"
-        width={400}
-        height={200}
-        style={{ minWidth: 400, minHeight: 200 }}
-      />
-    </>
-  );
-};
+import { UserContext } from '../context/UserContext';
 
 const DashboardPage = () => {
+  const { user } = useContext(UserContext);
   const [tests, setTests] = useState([]);
   const navigate = useNavigate();
 
@@ -60,25 +24,28 @@ const DashboardPage = () => {
 
   return (
     <div>
-      <div className="w-full flex flex-col text-black">
-        <div className="mt-24 mx-12 lg:mx-28">
-          <h1 className="text-3xl font-bold mb-4">Your Tests</h1>
-          <CardRow cardWidth={400}>
-            {tests.length ? (
-              tests.map((test) => (
-                <QuizCard
-                  test={test}
-                  key={test.id}
-                  openTestFunc={() => navigate(`/test/${test.id}`)}
-                />
-              ))
-            ) : (
-              <SkeletonTests />
-            )}
-          </CardRow>
-        </div>
+      <div className="w-full flex flex-col text-black py-10">
+        {!user ?? (
+          <div className="mt-16 mx-12 lg:mx-28">
+            <h1 className="text-3xl font-bold mb-4">Your Tests</h1>
+            <CardRow cardWidth={400}>
+              {tests.length ? (
+                tests.map((test) => (
+                  <QuizCard
+                    test={test}
+                    key={test.id}
+                    openTestFunc={() => navigate(`/test/${test.id}`)}
+                  />
+                ))
+              ) : (
+                <SkeletonQuizCard />
+              )}
+            </CardRow>
+          </div>
+        )}
+
         <div className="mt-16 mx-12 lg:mx-28">
-          <h1 className="text-3xl font-bold mb-4">Trending</h1>
+          <h1 className="text-3xl font-bold mb-4">Trending🔥</h1>
           <CardRow cardWidth={400}>
             {tests.length ? (
               tests.map((test) => (
@@ -89,12 +56,32 @@ const DashboardPage = () => {
                 />
               ))
             ) : (
-              <SkeletonTests />
+              <SkeletonQuizCard />
             )}
           </CardRow>
         </div>
-        <div className="my-16 mx-12 lg:mx-28">
-          <h1 className="text-3xl font-bold mb-4">Top Quizzes For You</h1>
+
+        {!user ?? (
+          <div className="my-16 mx-12 lg:mx-28">
+            <h1 className="text-3xl font-bold mb-4">Top Quizzes For You</h1>
+            <CardRow cardWidth={400}>
+              {tests.length ? (
+                tests.map((test) => (
+                  <QuizCard
+                    test={test}
+                    key={test.id}
+                    openTestFunc={() => navigate(`/test/${test.id}`)}
+                  />
+                ))
+              ) : (
+                <SkeletonQuizCard />
+              )}
+            </CardRow>
+          </div>
+        )}
+
+        <div className="mt-16 mx-12 lg:mx-28">
+          <h1 className="text-3xl font-bold mb-4">Most Reviewed</h1>
           <CardRow cardWidth={400}>
             {tests.length ? (
               tests.map((test) => (
@@ -105,7 +92,24 @@ const DashboardPage = () => {
                 />
               ))
             ) : (
-              <SkeletonTests />
+              <SkeletonQuizCard />
+            )}
+          </CardRow>
+        </div>
+
+        <div className="mt-16 mx-12 lg:mx-28">
+          <h1 className="text-3xl font-bold mb-4">Highest Rated</h1>
+          <CardRow cardWidth={400}>
+            {tests.length ? (
+              tests.map((test) => (
+                <QuizCard
+                  test={test}
+                  key={test.id}
+                  openTestFunc={() => navigate(`/test/${test.id}`)}
+                />
+              ))
+            ) : (
+              <SkeletonQuizCard />
             )}
           </CardRow>
         </div>

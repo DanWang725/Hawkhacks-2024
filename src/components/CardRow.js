@@ -45,7 +45,7 @@ const CardRow = ({ cardWidth, children }) => {
           aria-label="scroll left"
           color="secondary"
           style={{ position: 'absolute', left: '-30px' }}
-          disabled={scrollIndex === 0}
+          disabled={scrollIndex === 0 || children.length === undefined}
           onClick={() => setScrollIndex(scrollIndex - 1)}
         >
           <ArrowLeftIcon />
@@ -62,7 +62,10 @@ const CardRow = ({ cardWidth, children }) => {
           aria-label="scroll right"
           color="secondary"
           onClick={() => setScrollIndex(scrollIndex + 1)}
-          disabled={scrollIndex + visibleCount >= children.length}
+          disabled={
+            scrollIndex + visibleCount >= children.length ||
+            children.length === undefined
+          }
           style={{ position: 'absolute', right: '-30px' }}
         >
           <ArrowRightIcon />
