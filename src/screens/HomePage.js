@@ -111,8 +111,7 @@ const HomePage = () => {
               alt="Quiz++ logo"
               className="h-10"
             />
-            {/* Change name to Quizify? */}
-            <div className="flex items-center flex-row">
+            <div className="hidden md:flex items-center flex-row">
               <p className="mx-3">Home</p>
               <p className="mx-3">How It Works</p>
               <p className="mx-3">Features</p>
