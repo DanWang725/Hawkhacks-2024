@@ -12,12 +12,20 @@ engine = create_engine(DATABASE_URL, pool_pre_ping=True, pool_recycle=300)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
+class Session(Base):
+    __tablename__ = "session"
+    id = Column(String(255), nullable=False, primary_key=True, unique=True, index=True)
+    userId = Column(Integer, ForeignKey("user.id"), nullable=False, unique=True, index=True)
+    createdAt = Column(DateTime(timezone=True), nullable=False)
+    expireAt = Column(DateTime(timezone=True))
+
+
 class User(Base):
     __tablename__ = "user"
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     name = Column(String(30), index=True, nullable=False)
     email = Column(String(30), unique=True, nullable=False)
-    password = Column(String(30), nullable=False)
+    password = Column(String(255), nullable=False)
 
 
 class Course(Base):

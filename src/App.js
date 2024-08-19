@@ -8,6 +8,7 @@ import { Toaster } from 'react-hot-toast';
 import HomePage from './screens/HomePage.js';
 import LoginPage from './screens/account/LoginPage.js';
 import SignUpPage from './screens/account/SignUpPage.js';
+import { UserProvider } from './context/UserContext.js';
 
 const theme = createTheme({
   palette: {
@@ -16,25 +17,26 @@ const theme = createTheme({
     tertiary: { main: '#1E2A69' },
   },
 });
-
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <Toaster position="bottom-center" reverseOrder />
-        <Navbar />
-        <Routes>
-          <Route path="/">
-            <Route index element={<HomePage />} />
-            <Route path="home" element={<HomePage />} />
-            <Route path="dashboard" element={<DashboardPage />} />
-            <Route path="create" element={<CreateTest />} />
-            <Route path="test/:id" element={<QuizPage />} />
-            <Route path="login" element={<LoginPage />} />
-            <Route path="signup" element={<SignUpPage />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <UserProvider>
+        <BrowserRouter>
+          <Toaster position="bottom-center" reverseOrder />
+          <Navbar />
+          <Routes>
+            <Route path="/">
+              <Route index element={<HomePage />} />
+              <Route path="home" element={<HomePage />} />
+              <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="create" element={<CreateTest />} />
+              <Route path="test/:id" element={<QuizPage />} />
+              <Route path="login" element={<LoginPage />} />
+              <Route path="signup" element={<SignUpPage />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </UserProvider>
     </ThemeProvider>
   );
 };

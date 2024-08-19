@@ -106,7 +106,11 @@ const HomePage = () => {
       <div className="w-full flex items-center justify-center text-primary">
         <footer className="w-full justify-between py-6 px-10 flex-col flex">
           <div className="gap-6 flex items-center flex-col justify-start">
-            <p className="text-4xl font-semibold text-center">Study Buddy</p>
+            <img
+              src="/images/logo-name-only-dark-blue.png"
+              alt="Quiz++ logo"
+              className="h-10"
+            />
             {/* Change name to Quizify? */}
             <div className="flex items-center flex-row">
               <p className="mx-3">Home</p>
@@ -119,7 +123,7 @@ const HomePage = () => {
           <div className="w-full h-0 flex my-6 items-start border-[#d9d9d9] border-solid border-2" />
           <div className="w-full flex items-center justify-between md:flex-row lg:flex-row flex-col">
             <p className="bodySmall home-text89">
-              © 2024 Study Buddy, All Rights Reserved.
+              © 2024 Quiz PlusPlus, All Rights Reserved.
             </p>
           </div>
         </footer>

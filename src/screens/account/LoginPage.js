@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import toast from 'react-hot-toast';
 import { Box } from '@mui/system';
 import { postLogin } from '../../api/accounts';
+import { UserContext } from '../../context/UserContext';
 
 const LoginPage = () => {
+  const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState(''); // WARNING: THIS IS LITERALLY PLAIN TEXT PASSWORD (VERY BAD!!!)
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    // if user is signed in, redirect to home page
+    if (user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
 
   const handleSubmit = (e) => {
     setIsSubmitting(true);
@@ -18,6 +27,7 @@ const LoginPage = () => {
     postLogin({ email, password })
       .then((res) => {
         if (res.status === 200) {
+          setUser(res.data?.username);
           navigate(`/`);
           toast.success('Login successful!');
         } else {

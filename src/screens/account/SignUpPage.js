@@ -1,34 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import { Box } from '@mui/system';
-import { postNewAccount } from '../../api/accounts';
+import { completeNewAccountProcess } from '../../api/accounts';
 import toast from 'react-hot-toast';
+import { UserContext } from '../../context/UserContext';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState(''); // WARNING: THIS IS LITERALLY PLAIN TEXT PASSWORD (VERY BAD!!!)
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user, setUser } = useContext(UserContext);
+
+  useEffect(() => {
+    // if user is signed in, redirect to home page
+    if (user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
+
+  const submitRegistration = async () => {
+    const response = await completeNewAccountProcess({
+      username,
+      email,
+      password,
+    });
+    console.log('completeNewAccountProcess response: ', response);
+
+    if (response.status === 200) {
+      setUser(response.data?.username);
+      toast.success('Account created successfully!');
+      navigate(`/`);
+    } else {
+      toast.error(response.detail);
+    }
+  };
 
   const handleSubmit = (e) => {
     setIsSubmitting(true);
     e.preventDefault();
 
-    postNewAccount({ username, email, password })
-      .then((res) => {
-        if (res.status === 200) {
-          navigate(`/`);
-          toast.success('Account created successfully!');
-        } else {
-          toast.error('Failed to Create Account! :(');
-        }
-      })
-      .catch(console.error)
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+    if (password === confirmPassword) {
+      if (password.length >= 8) {
+        submitRegistration();
+      } else {
+        toast.error('Password must be at least 8 characters long!');
+      }
+    } else {
+      toast.error('Passwords do not match!');
+    }
+
+    setIsSubmitting(false);
   };
 
   return (
@@ -95,6 +120,23 @@ const SignUpPage = () => {
                     required
                     placeholder="********"
                     onChange={(e) => setPassword(e.target.value)}
+                    disabled={isSubmitting}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label
+                    className="block text-primary text-sm font-bold mb-2"
+                    htmlFor="confirmPassword"
+                  >
+                    Confirm Password
+                  </label>
+                  <input
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-primary mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                    id="confirmPassword"
+                    type="password"
+                    required
+                    placeholder="********"
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     disabled={isSubmitting}
                   />
                 </div>

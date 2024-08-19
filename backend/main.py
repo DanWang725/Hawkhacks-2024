@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, Request
+from fastapi import FastAPI, Depends, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import datetime
@@ -24,27 +24,54 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
+    
+
+@app.get("/users/me")
+async def get_user_me(request: Request, db: Session = Depends(database.get_db)):
+    sessionId = request.cookies.get("session")
+    if not sessionId:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    session = await crud.get_session_by_id(db, sessionId)
+    if session is None:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    user = await crud.get_user_by_id(db, session.userId)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return { "username": user.name, "email": user.email }
+
 
 @app.post("/users")
 async def create_user(request: Request, db: Session = Depends(database.get_db)):
     data = await request.json()
     user = await crud.create_user(db=db, name=data.get("username"), email=data.get("email"), password=data.get("password"))
     
-    return { "status": 200, "id": user.id, "username": user.name, "email": user.email }
+    return { "status": 200, "details": f"User {user.name} created successfully" }
 
 
-@app.post("/users/login")
-async def login(request: Request, db: Session = Depends(database.get_db)):
+@app.post("/login")
+async def login(request: Request, response: Response, db: Session = Depends(database.get_db)):
     data = await request.json()
+    
+    if not await crud.verify_login(db, data.get("email"), data.get("password")):
+        return { "status": 401, "message": "Incorrect email or password" }
+    
     user = await crud.get_user_by_email(db, email=data.get("email"))
+    newSession = await crud.create_new_session(db, userId=user.id)
+    response.set_cookie(key="session", path="/", value=newSession.id, expires=newSession.expireAt, httponly=True, secure=True, samesite='none')
     
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
+    return { "status": 200, "username": user.name }
+
+
+@app.post("/logout")
+async def logout(request: Request, response: Response, db: Session = Depends(database.get_db)):
+    sessionId = request.cookies.get("session")
+    response.delete_cookie(key="session", path="/", httponly=True, secure=True, samesite='none')
+    await crud.delete_session(db, id=sessionId)
     
-    if user.password != data.get("password"):
-        raise HTTPException(status_code=401, detail="Incorrect password")
-    
-    return { "status": 200, "id": user.id, "username": user.name, "email": user.email }
+    return { "status": 200, "message": "Logout successful" }
 
 
 @app.get("/users/{userId}")
@@ -63,8 +90,7 @@ async def get_course(courseId: int, db: Session = Depends(database.get_db)):
         raise HTTPException(status_code=404, detail="Course not found")
     
     return course
-    
-    
+
 
 
 @app.get("/courses")

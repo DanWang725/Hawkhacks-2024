@@ -1,7 +1,18 @@
-import datetime
+from datetime import datetime, timedelta
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from database import *
+from database import Session as SessionModel
+import os
+from hashing import Hash
+from uuid import uuid4
+from pytz import UTC as utc
+
+load_dotenv()
+JWT_SECRET = os.getenv('JWT_SECRET')
+
+oauth2schema = OAuth2PasswordBearer(tokenUrl="/users/token")
 
 ###############
 #    USERS    #
@@ -18,7 +29,7 @@ async def create_user(db: Session, name: str, email: str, password: str):
     # check if the user already exists
     existing_user = await get_user_by_email(db, email=email)
     if existing_user:
-        raise HTTPException(status_code=409, detail="Email already registered")
+        raise HTTPException(status_code=409, detail="User already exists")
     
     if (len(name) == 0):
         raise HTTPException(status_code=400, detail="Name cannot be empty")
@@ -28,7 +39,7 @@ async def create_user(db: Session, name: str, email: str, password: str):
         raise HTTPException(status_code=400, detail="Password cannot be empty")
     
     try:
-        user = User(name=name, email=email, password=password)
+        user = User(name=name, email=email, password=Hash.bcrypt(password))
         db.add(user)
         db.commit()
         db.refresh(user)
@@ -36,6 +47,62 @@ async def create_user(db: Session, name: str, email: str, password: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
 
+
+
+
+##################
+# AUTHENTICATION #
+##################
+
+async def get_session_by_id(db: Session, id: str):
+    try:
+        session = db.query(SessionModel).filter(SessionModel.id == id).first()
+        if not session:
+            raise HTTPException(status_code=401, detail="Invalid session")
+        
+        present = datetime.now().replace(tzinfo=utc)
+        if session.expireAt and present > session.expireAt.replace(tzinfo=utc):
+            db.delete(session)
+            raise HTTPException(status_code=401, detail="Session expired")
+    except Exception:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+    return session
+
+async def create_new_session(db: Session, userId: int):
+    uuid = str(uuid4())
+    try:
+        present = datetime.now().replace(tzinfo=utc)
+        session = SessionModel(id=uuid, userId=userId, createdAt=present, expireAt=present + timedelta(days=7))
+        db.add(session)
+        db.commit()
+        db.refresh(session)
+    except Exception:
+        raise HTTPException(status_code=500, detail=f"Internal Server Error")
+
+    return session
+
+
+async def verify_login(db: Session, email: str, password: str) -> bool:
+    user = await get_user_by_email(db, email)
+    
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    if not Hash.verify(user.password, password):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    return True
+
+
+async def delete_session(db: Session, id: str):
+    try:
+        session = db.query(SessionModel).filter(SessionModel.id == id).first()
+        if not session:
+            raise HTTPException(status_code=404, detail="Session not found")
+        db.delete(session)
+        db.commit()
+    except Exception:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
 ###############
