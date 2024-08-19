@@ -41,10 +41,11 @@ class Test(Base):
     __tablename__ = "test"
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     dateCreated = Column(DateTime(timezone=True), nullable=False)
-    name = Column(String(30), nullable=False)
+    name = Column(String(50), nullable=False)
     desc = Column(String(255))
     courseId = Column(Integer, ForeignKey("course.id"), nullable=False)
     authorId = Column(Integer, ForeignKey("user.id"), nullable=False)
+    views = Column(Integer, default=0, nullable=False)
 
 
 class Unit(Base):

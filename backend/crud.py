@@ -8,11 +8,48 @@ import os
 from hashing import Hash
 from uuid import uuid4
 from pytz import UTC as utc
+import cache
+import asyncio
 
 load_dotenv()
 JWT_SECRET = os.getenv('JWT_SECRET')
 
 oauth2schema = OAuth2PasswordBearer(tokenUrl="/users/token")
+
+
+###############
+#    CACHE    #
+###############
+
+async def add_quiz_view(testId: int):
+    if not testId or testId < 0:
+        raise HTTPException(status_code=400, detail="Invalid Test ID")
+    
+    try:
+        await cache.add_quiz_view(testId)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
+
+
+async def update_test_views(db: Session, testId: int, viewCount: int):
+    test = await get_test_by_id(db, testId)
+    test.views += viewCount
+    db.commit()
+    db.refresh(test)
+
+
+async def add_quiz_views(db: Session, viewCounts: list[tuple[int, int]]):
+    tasks = []
+    try:
+        for testId, viewCount in viewCounts:
+            task = asyncio.create_task(update_test_views(db, testId, viewCount))
+            tasks.append(task)
+        
+        # Run all tasks concurrently
+        await asyncio.gather(*tasks)
+    except Exception as e:
+        print(e)
+
 
 ###############
 #    USERS    #
@@ -152,7 +189,7 @@ async def get_tests_by_user_id(db: Session, userId: int):
 
 async def create_test(db: Session, name: str, desc: str, courseId: int, authorId: int, dateCreated: datetime):
     try:
-        test = Test(name=name, desc=desc, courseId=courseId, authorId=authorId, dateCreated=dateCreated)
+        test = Test(name=name, desc=desc, courseId=courseId, authorId=authorId, dateCreated=dateCreated, views=0)
         db.add(test)
         db.commit()
         db.refresh(test)
