@@ -82,9 +82,11 @@ async def login(request: Request, response: Response, db: Session = Depends(get_
         return { "status": 401, "message": "Incorrect email or password" }
     
     user = await crud.get_user_by_email(db, email=data.get("email"))
-    newSession = await crud.create_new_session(db, userId=user.id)
-    response.set_cookie(key="session", path="/", value=newSession.id, expires=newSession.expireAt, httponly=True, secure=True, samesite='none')
+    session = await crud.get_session_by_user_id(db, userId=user.id)
+    if not session:
+        session = await crud.create_new_session(db, userId=user.id)
     
+    response.set_cookie(key="session", path="/", value=session.id, expires=session.expireAt, httponly=True, secure=True, samesite='none')
     return { "status": 200, "username": user.name }
 
 
