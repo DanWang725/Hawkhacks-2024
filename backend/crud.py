@@ -103,6 +103,9 @@ async def get_session_by_id(db: Session, id: str):
     
     return session
 
+async def get_session_by_user_id(db: Session, userId: int):
+    return db.query(SessionModel).filter(SessionModel.userId == userId).first()
+
 async def create_new_session(db: Session, userId: int):
     uuid = str(uuid4())
     try:
