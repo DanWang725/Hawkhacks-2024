@@ -1,10 +1,12 @@
 from fastapi import FastAPI, Depends, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordRequestForm
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from contextlib import asynccontextmanager
 from sqlalchemy.orm import Session
 import datetime
+from datetime import timedelta
 import crud # crud.py file
 from database import get_db
 from cache import setup_cache
@@ -52,6 +54,19 @@ app.add_middleware(
 
 @app.get("/users/me")
 async def get_user_me(request: Request, db: Session = Depends(get_db)):
+    # Try JWT token authentication first
+    authorization = request.headers.get("authorization")
+    if authorization and authorization.startswith("Bearer "):
+        token = authorization.split(" ")[1]
+        try:
+            email = await crud.verify_token(token)
+            user = await crud.get_user_by_email(db, email)
+            if user:
+                return { "username": user.name, "email": user.email }
+        except HTTPException:
+            pass  # Fall through to session authentication
+    
+    # Fall back to session-based authentication
     sessionId = request.cookies.get("session")
     if not sessionId:
         raise HTTPException(status_code=401, detail="Unauthorized")
@@ -91,6 +106,32 @@ async def login(request: Request, response: Response, db: Session = Depends(get_
     
     response.set_cookie(key="session", path="/", value=session.id, expires=session.expireAt, httponly=True, secure=True, samesite='none')
     return { "status": 200, "username": user.name }
+
+
+@app.post("/users/token")
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    """
+    OAuth2 compatible token login endpoint that returns a JWT token.
+    Expected form data: username (email) and password
+    """
+    # Verify the user credentials
+    if not await crud.verify_login(db, form_data.username, form_data.password):
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    # Get the user
+    user = await crud.get_user_by_email(db, email=form_data.username)
+    
+    # Create the access token
+    access_token_expires = timedelta(minutes=crud.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = crud.create_access_token(
+        data={"sub": user.email}, expires_delta=access_token_expires
+    )
+    
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @app.post("/logout")

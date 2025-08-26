@@ -12,3 +12,4 @@ bcrypt
 pytz
 aiosqlite
 apscheduler
+python-jose[cryptography]

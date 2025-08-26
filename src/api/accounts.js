@@ -1,32 +1,5 @@
 import { Axios } from '../axios';
 
-// TODO: don't send the password in plaintext
-const completeNewAccountProcess = async ({ username, email, password }) => {
-  const newAccountResponse = await postNewAccount({
-    username,
-    email,
-    password,
-  });
-  console.log('newAccount: ', newAccountResponse);
-  if (newAccountResponse.status !== 200) {
-    return {
-      status: newAccountResponse.status,
-      detail: newAccountResponse.response.data.detail,
-    };
-  }
-
-  const tokenResponse = await postGenerateToken({ email, password });
-  console.log('tokenResponse: ', tokenResponse);
-  if (tokenResponse.status !== 200) {
-    return {
-      status: tokenResponse.status,
-      detail: tokenResponse.response.data.detail,
-    };
-  }
-
-  return tokenResponse;
-};
-
 const postNewAccount = async ({ username, email, password }) => {
   try {
     const dataPayload = {
@@ -64,6 +37,33 @@ const postGenerateToken = async ({ email, password }) => {
   } catch (error) {
     return { status: 400, ...error };
   }
+};
+
+// TODO: don't send the password in plaintext
+const completeNewAccountProcess = async ({ username, email, password }) => {
+  const newAccountResponse = await postNewAccount({
+    username,
+    email,
+    password,
+  });
+  console.log('newAccount: ', newAccountResponse);
+  if (newAccountResponse.status !== 200) {
+    return {
+      status: newAccountResponse.status,
+      detail: newAccountResponse.response.data.detail,
+    };
+  }
+
+  const tokenResponse = await postGenerateToken({ email, password });
+  console.log('tokenResponse: ', tokenResponse);
+  if (tokenResponse.status !== 200) {
+    return {
+      status: tokenResponse.status,
+      detail: tokenResponse.response.data.detail,
+    };
+  }
+
+  return tokenResponse;
 };
 
 const postLogin = async ({ email, password }) => {

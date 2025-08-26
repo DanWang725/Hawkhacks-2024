@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from fastapi import HTTPException
+from fastapi import HTTPException, Depends
 from database import *
 from database import Session as SessionModel
 import os
@@ -10,9 +10,12 @@ from uuid import uuid4
 from pytz import UTC as utc
 import cache
 import asyncio
+from jose import JWTError, jwt
 
 load_dotenv()
 JWT_SECRET = os.getenv('JWT_SECRET')
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 oauth2schema = OAuth2PasswordBearer(tokenUrl="/users/token")
 
@@ -90,6 +93,33 @@ async def create_user(db: Session, name: str, email: str, password: str):
 ##################
 # AUTHENTICATION #
 ##################
+
+def create_access_token(data: dict, expires_delta: timedelta = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, JWT_SECRET, algorithm=ALGORITHM)
+    return encoded_jwt
+
+async def verify_token(token: str):
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        return email
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+async def get_current_user(token: str = Depends(oauth2schema), db: Session = Depends(get_db)):
+    email = await verify_token(token)
+    user = await get_user_by_email(db, email)
+    if user is None:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    return user
 
 async def get_session_by_id(db: Session, id: str):
     session = db.query(SessionModel).filter(SessionModel.id == id).first()
