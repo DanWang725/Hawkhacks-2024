@@ -2,6 +2,7 @@ from openai import OpenAI, AsyncOpenAI
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field, RootModel
 from typing import List, Union
+import asyncio
 
 
 class MultiChoiceQuestionSchema(BaseModel):
@@ -184,52 +185,52 @@ class Manager:
 
 
 
-# example_notes = """
-# Arithmetic Operations
-# - Addition, Multiplication, Subtraction and Division done on images
-# - Addition is a form of averaging, usually used to reduce noise
-# - Subtraction is used to reveal differences between those images and is often used in the detection of change
-# - Multiplication involves floating point DNs, if one image is Boolean the result is a **masking op**
-# - Division (Ratioing) is one of the most common ops, and is used heavily in vegetation indices
+example_notes = """
+Arithmetic Operations
+- Addition, Multiplication, Subtraction and Division done on images
+- Addition is a form of averaging, usually used to reduce noise
+- Subtraction is used to reveal differences between those images and is often used in the detection of change
+- Multiplication involves floating point DNs, if one image is Boolean the result is a **masking op**
+- Division (Ratioing) is one of the most common ops, and is used heavily in vegetation indices
 
-# Vegetation Transformations (Indices)
+Vegetation Transformations (Indices)
 
-# - Vegetation Index (VI) is a “synthetic (not natural) image layer” which is created using existing bands of a multispectral image
-# - Provides us information that is unique and cannot be found in any other individual bands
-# - It *maximizes sensitivity* to plant biophysical parameters, and it *normalizes* impacts of sun angle, canopy background, topography, soil variations
-#     - it enables us to see vegetation much more apparently in the new image layer
-# - VI is used to quantify/predict vegetation biomass (weight of plant in a given area), productivity (healthiness), leaf area (coverage), and/or vegetative ground cover
-# - VI's are mainly a combination of the red and near-infrared bands, but this is not always the case
+- Vegetation Index (VI) is a “synthetic (not natural) image layer” which is created using existing bands of a multispectral image
+- Provides us information that is unique and cannot be found in any other individual bands
+- It *maximizes sensitivity* to plant biophysical parameters, and it *normalizes* impacts of sun angle, canopy background, topography, soil variations
+    - it enables us to see vegetation much more apparently in the new image layer
+- VI is used to quantify/predict vegetation biomass (weight of plant in a given area), productivity (healthiness), leaf area (coverage), and/or vegetative ground cover
+- VI's are mainly a combination of the red and near-infrared bands, but this is not always the case
 
-# Leaf Cell Structure
-# - The Near-Infrared (NIR) wavelength reflectance is controlled by the leaf's cell structure
-# - The amount of reflectance varies with:
-#     - Leaf Age
-#     - Health
-#     - Species
-# - The reflectance is also related to:
-#     - leaf thickness and coating
-#     - woody tissue
-#     - water content
-# - Healthy vegetation absorbs blue- and red-light energy to fuel *photosynthesis* and create *chlorophyll*. A plant with more chlorophyll will **reflect more near-infrared energy** than an unhealthy plant.
+Leaf Cell Structure
+- The Near-Infrared (NIR) wavelength reflectance is controlled by the leaf's cell structure
+- The amount of reflectance varies with:
+    - Leaf Age
+    - Health
+    - Species
+- The reflectance is also related to:
+    - leaf thickness and coating
+    - woody tissue
+    - water content
+- Healthy vegetation absorbs blue- and red-light energy to fuel *photosynthesis* and create *chlorophyll*. A plant with more chlorophyll will **reflect more near-infrared energy** than an unhealthy plant.
 
-# Simple Ratios and NDVI (**Normalized Difference** Vegetation Index)
-# - The simple ratio takes advantage of the inverse relationship between the chlorophyll absorption of the red radiant energy and increased reflectance of near-infrared (NIR) energy for healthy plant canopies
-# - The NIR/Red ratio helps to produce an greyscale image showing variation in biomass (the amount of vegetative matter) and in LAI (**Leaf Area Index**) as well as the state of health (physiological functioning) of plants (magnitude of value will be greater than 1)
-# - NDVI is used for estimating net primary production over varying biome types, monitor patterns of vegetative surface, and assess the length of growing seasons
-# - Seasonal and interannual changes can be monitored using the NDVI ratio
-# - Removes multiplicative noise (illumination differences, cloud shadow, and topographic variation)
-# - The fact that sums and differences of bands are used in the NDVI rather than absolute values may make the NDVI more appropriate for use in studies *where comparisons over time for a single area are involved*
-#     - **ratio value is not affected by the absolute pixel values in the NIR and R bands**
-# - The NDVI is functionally equivalent to and is a nonlinear transform of the simple ratio
-# """
+Simple Ratios and NDVI (**Normalized Difference** Vegetation Index)
+- The simple ratio takes advantage of the inverse relationship between the chlorophyll absorption of the red radiant energy and increased reflectance of near-infrared (NIR) energy for healthy plant canopies
+- The NIR/Red ratio helps to produce an greyscale image showing variation in biomass (the amount of vegetative matter) and in LAI (**Leaf Area Index**) as well as the state of health (physiological functioning) of plants (magnitude of value will be greater than 1)
+- NDVI is used for estimating net primary production over varying biome types, monitor patterns of vegetative surface, and assess the length of growing seasons
+- Seasonal and interannual changes can be monitored using the NDVI ratio
+- Removes multiplicative noise (illumination differences, cloud shadow, and topographic variation)
+- The fact that sums and differences of bands are used in the NDVI rather than absolute values may make the NDVI more appropriate for use in studies *where comparisons over time for a single area are involved*
+    - **ratio value is not affected by the absolute pixel values in the NIR and R bands**
+- The NDVI is functionally equivalent to and is a nonlinear transform of the simple ratio
+"""
 
 
 if __name__ == "__main__":
     manager = Manager()
     
-    # response = manager.questionsNoHistory(example_notes)
-    # print("response:\n", response)
-    # print(f"\nmessage:\n{response.choices[0].message.content}\n")
-    # print("\n\n")
-    # manager.questions_with_history(example_notes)
+    response = asyncio.run(manager.questionsNoHistory(example_notes))
+    print("response:\n", response)
+    print(f"\nmessage:\n{response.choices[0].message.parsed}\n")
+    print("\n\n")
+    manager.questionsWithHistory(example_notes)

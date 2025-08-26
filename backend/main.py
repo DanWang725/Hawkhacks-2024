@@ -14,30 +14,31 @@ from jobs import commit_view_cache
 
 scheduler = AsyncIOScheduler()
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # runs on startup
-    await setup_cache()
+# @asynccontextmanager
+# async def lifespan(app: FastAPI):
+#     # runs on startup
+#     await setup_cache()
     
-    scheduler.add_job(
-        commit_view_cache,
-        trigger=IntervalTrigger(minutes=10),
-        id='commit_view_cache',
-    )
+#     scheduler.add_job(
+#         commit_view_cache,
+#         trigger=IntervalTrigger(minutes=10),
+#         id='commit_view_cache',
+#     )
 
-    scheduler.start()
+#     scheduler.start()
     
-    yield
-    # runs on shutdown
-    pass
+#     yield
+#     # runs on shutdown
+#     pass
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI() #lifespan=lifespan
 openAiClient = ChatCompletionManager.Manager()
 
 # These are the allowed origins for api calls
 origins = [
     "http://localhost:3000",  # React development server
-    "http://127.0.0.1:3000",  # Another possible address for React
+    "http://127.0.0.1:3000",
+    "http://10.12.248.33:3000",
 ]
 
 app.add_middleware(
@@ -76,7 +77,9 @@ async def create_user(request: Request, db: Session = Depends(get_db)):
 
 @app.post("/login")
 async def login(request: Request, response: Response, db: Session = Depends(get_db)):
+    print("login requested")
     data = await request.json()
+    print(data)
     
     if not await crud.verify_login(db, data.get("email"), data.get("password")):
         return { "status": 401, "message": "Incorrect email or password" }

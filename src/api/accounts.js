@@ -76,6 +76,7 @@ const postLogin = async ({ email, password }) => {
 
     return { status: 200, data };
   } catch (error) {
+    console.log('error: ', error);
     return { status: 400, ...error };
   }
 };

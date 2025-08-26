@@ -10,7 +10,7 @@ const LoginPage = () => {
   const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState(''); // WARNING: THIS IS LITERALLY PLAIN TEXT PASSWORD (VERY BAD!!!)
+  const [password, setPassword] = useState(''); // WARNING: THIS IS LITERALLY PLAIN TEXT PASSWORD
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -23,6 +23,7 @@ const LoginPage = () => {
   const handleSubmit = (e) => {
     setIsSubmitting(true);
     e.preventDefault();
+    console.log('Logging in...');
 
     postLogin({ email, password })
       .then((res) => {
